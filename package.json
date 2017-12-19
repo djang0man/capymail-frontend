@@ -1,0 +1,59 @@
+{
+  "name": "capymail-frontend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "webpack.config.js",
+  "scripts": {
+    "ui_build": "webpack",
+    "ui_start": "node ./index.js",
+    "ui_watch": "webpack-dev-server --inline --hot",
+    "heroku-postbuild": "webpack",
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "8.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stuartkershaw/capymail-frontend.git"
+  },
+  "author": "stuartdkershaw@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stuartkershaw/capymail-frontend/issues"
+  },
+  "homepage": "https://github.com/stuartkershaw/capymail-frontend#readme",
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.17",
+    "css-loader": "^0.28.7",
+    "dotenv": "^4.0.0",
+    "draft-js": "^0.10.4",
+    "draftjs-to-html": "^0.8.1",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.5",
+    "html-webpack-plugin": "^2.30.1",
+    "mailgun-js": "^0.13.1",
+    "moment": "^2.20.0",
+    "node-sass": "^4.7.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-event-listener": "^0.5.2",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "redux": "^3.7.2",
+    "resolve-url-loader": "^2.2.1",
+    "sass-loader": "^6.0.6",
+    "socket.io": "^2.0.4",
+    "superagent": "^3.8.2",
+    "uglifyjs-webpack-plugin": "^1.1.4",
+    "url-loader": "^0.6.2",
+    "validator": "^9.2.0",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.7"
+  }
+}
