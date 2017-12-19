@@ -30,7 +30,8 @@ class Dashboard extends React.Component {
     let {clientProfile} = this.props;
     return (
       <div className='dashboard'>
-        <h2>Messages</h2>
+        <h2>{clientProfile.username}</h2>
+        <h3>Messages</h3>
         <ul> 
           {this.props.messages.map((message, key) => 
             <li className='conversation' key={key}>
