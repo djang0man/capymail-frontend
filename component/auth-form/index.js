@@ -31,10 +31,10 @@ class AuthForm extends React.Component {
     switch (name) {
       case 'username':
         if (value.length < 6) {
-          return 'Conversation Username requires 6 or more characters';
+          return 'Conversation Name requires 6 or more characters';
         }
         if (!validator.isAlphanumeric(value)) {
-          return 'Conversation Username requires letters and numbers';
+          return 'Conversation Name requires letters and numbers';
         }
         return null;
       case 'email':
@@ -96,7 +96,7 @@ class AuthForm extends React.Component {
           className={util.renderIf(
             this.state.usernameDirty && this.state.usernameError, 'invalid')}
           name='username'
-          placeholder='conversation username'
+          placeholder='name'
           type='text'
           value={this.state.username}
           onChange={this.handleChange}
@@ -110,7 +110,7 @@ class AuthForm extends React.Component {
               className={util.renderIf(
                 this.state.emailDirty && this.state.emailError, 'invalid')}
               name='email'
-              placeholder='sender email'
+              placeholder='email'
               type='email'
               value={this.state.email}
               onChange={this.handleChange}
