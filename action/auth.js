@@ -1,7 +1,8 @@
 'use strict';
 
 import superagent from 'superagent';
-import {cookieDelete} from '../lib/util.js';
+import * as util from '../lib/util.js';
+window.util = util;
 
 export const tokenSet = (token) => ({
   type: 'TOKEN_SET',
@@ -13,7 +14,7 @@ export const tokenRemove = () => ({
 });
 
 export const logout = () => {
-  cookieDelete('X-CapyMail-Token');
+  util.cookieDelete('X-CapyMail-Token');
   return tokenRemove();
 };
 
@@ -22,7 +23,9 @@ export const signup = (user) => (store) => {
   .send(user)
   .withCredentials()
   .then(res => {
+    console.log('SIGNUP ::', {res});
     let {token} = JSON.parse(res.text);
+    util.cookieCreate('X-CapyMail-Token', token, 7);
     return store.dispatch(tokenSet(token));
   });
 };
@@ -32,7 +35,9 @@ export const login = (user) => (store) => {
   .auth(user.username, user.password)
   .withCredentials()
   .then(res => {
+    console.log('SIGNIN ::', {res});
     let {token} = JSON.parse(res.text);
+    util.cookieCreate('X-CapyMail-Token', token, 7);
     return store.dispatch(tokenSet(token));
   });
 };
