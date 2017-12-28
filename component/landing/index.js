@@ -4,8 +4,8 @@ import {Link} from 'react-router-dom';
 import AuthForm from '../auth-form';
 import * as util from '../../lib/util.js';
 import * as auth from '../../action/auth.js';
-import * as message from '../../action/message.js';
-import * as clientProfile from '../../action/client-profile.js';
+import * as profileActions from '../../action/profile.js';
+import * as conversationActions from '../../action/conversation.js';
 
 class Landing extends React.Component {
   constructor(props) {
@@ -17,29 +17,29 @@ class Landing extends React.Component {
   componentWillMount() {
     let {loggedIn} = this.props;
     if (loggedIn) {
-      this.props.fetchClientProfile()
+      this.props.fetchProfile()
       .then(action => {
-        if (action.type === 'CLIENT_PROFILE_SET') {
-          this.props.history.push('/messages');
+        if (action.type === 'PROFILE_SET') {
+          this.props.history.push('/dashboard');
         }
-        if (action.type === 'CLIENT_PROFILE_FAILED') {
-          this.props.history.push('/messages');
+        if (action.type === 'PROFILE_SET_FAILED') {
+          this.props.history.push('/dashboard');
         }
       });
-      this.props.fetchMessages();
+      this.props.fetchConversations();
     }
   }
 
   handleLogin(user) {
     this.props.login(user)
     .then(() => {
-      this.props.fetchClientProfile()
+      this.props.fetchProfile()
       .then(action => {
-        if (action.type === 'CLIENT_PROFILE_SET') {
-          this.props.history.push('/messages');
+        if (action.type === 'PROFILE_SET') {
+          this.props.history.push('/dashboard');
         }
-        if (action.type === 'CLIENT_PROFILE_FAILED') {
-          this.props.history.push('/sender');
+        if (action.type === 'PROFILE_SET_FAILED') {
+          this.props.history.push('/profile');
         }
       });
     })
@@ -49,15 +49,13 @@ class Landing extends React.Component {
   handleSignup(user) {
     this.props.signup(user)
     .then(() => {
-      this.props.history.push('/sender');
+      this.props.history.push('/profile');
     })
     .catch(console.error);
   }
 
   render() {
-    let {
-      location,
-    } = this.props;
+    let {location} = this.props;
     
     return (
       <div className='landing'>
@@ -65,17 +63,17 @@ class Landing extends React.Component {
           
         )}
 
-        {util.renderIf(location.pathname === '/create',
+        {util.renderIf(location.pathname === '/signup',
           <div>
-            <h3>Create Conversation</h3>
+            <h3>Signup</h3>
             <AuthForm onComplete={this.handleSignup} />
           </div>
         )}
 
-        {util.renderIf(location.pathname === '/enter',
+        {util.renderIf(location.pathname === '/login',
           <div>
-            <h3>Enter Conversation</h3>
-            <AuthForm type='enter' onComplete={this.handleLogin} />
+            <h3>Login</h3>
+            <AuthForm type='login' onComplete={this.handleLogin} />
           </div>
         )}
       </div>
@@ -90,8 +88,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   login: (user) => dispatch(auth.login(user)),
   signup: (user) => dispatch(auth.signup(user)),
-  fetchMessages: () => dispatch(message.fetch()),
-  fetchClientProfile: () => dispatch(clientProfile.fetch()),
+  fetchProfile: () => dispatch(profileActions.fetch()),
+  fetchConversations: () => dispatch(conversationActions.fetch()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Landing);

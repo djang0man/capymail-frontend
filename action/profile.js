@@ -3,12 +3,12 @@
 import superagent from 'superagent';
 
 export const set = (user) => ({
-  type: 'CLIENT_PROFILE_SET',
+  type: 'PROFILE_SET',
   payload: user,
 });
 
 export const failed = () => ({
-  type: 'CLIENT_PROFILE_FAILED',
+  type: 'PROFILE_SET_FAILED',
 });
 
 export const create = (user) => (store) => {

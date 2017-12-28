@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import ProfileForm from '..//profile-form';
 import * as util from '../../lib/util.js';
-import * as clientProfile from '../../action/client-profile.js';
+import * as profileActions from '../../action/profile.js';
 
 class Profile extends React.Component {
   constructor(props) {
@@ -18,7 +18,7 @@ class Profile extends React.Component {
   handleCreate(profile) {
     this.props.profileCreate(profile)
     .then(() => {
-      this.props.history.push('/messages');
+      this.props.history.push('/dashboard');
     });
   }
 
@@ -35,7 +35,7 @@ class Profile extends React.Component {
 
     return (
       <div className='profile'> 
-        <h2>Sender</h2>
+        <h2>Profile</h2>
         { profile ? 
           <div>
             <h3>{profile.firstName} {profile.lastName}</h3>
@@ -49,7 +49,7 @@ class Profile extends React.Component {
             : 
               <div>
                 <button className='button' onClick={() => this.setState({editing: true})}>
-                  Edit Sender
+                  Edit Profile
                 </button>
               </div>
             }
@@ -63,12 +63,12 @@ class Profile extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  profile: state.clientProfile,
+  profile: state.profile,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  profileCreate: (profile) => dispatch(clientProfile.create(profile)),
-  profileUpdate: (profile) => dispatch(clientProfile.update(profile)),
+  profileCreate: (profile) => dispatch(profileActions.create(profile)),
+  profileUpdate: (profile) => dispatch(profileActions.update(profile)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

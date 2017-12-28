@@ -5,16 +5,16 @@ import * as util from '../../lib/util.js';
 
 class AuthRedirect extends React.Component {
   componentWillMount() {
-    let {loggedIn, clientProfile, location} = this.props;
+    let {loggedIn, profile, location} = this.props;
     let {pathname} = location;
     if (!loggedIn) {
       this.props.history.push('/');
     } else {
-      if (pathname === '/' || pathname === '/enter' || pathname === '/create') {
-        if (!clientProfile) {
-          this.props.history.push('/sender');
+      if (pathname === '/' || pathname === '/login' || pathname === '/signup') {
+        if (!profile) {
+          this.props.history.push('/profile');
         } else {
-          this.props.history.push('/messages');
+          this.props.history.push('/dashboard');
         }
       }
     }
@@ -28,8 +28,8 @@ class AuthRedirect extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  profile: state.profile,
   loggedIn: !!state.token,
-  clientProfile: state.clientProfile,
 });
 
 export default connect(mapStateToProps)(AuthRedirect);

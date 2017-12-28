@@ -9,9 +9,11 @@ import Header from '../header';
 import Landing from '../landing';
 import Profile from '../profile';
 import Dashboard from '../dashboard';
+import Conversation from '../conversation';
 import AuthRedirect from '../auth-redirect';
-import * as message from '../../action/message.js';
-import * as clientProfile from '../../action/client-profile.js';
+import * as profileActions from '../../action/profile.js';
+import * as messageActions from '../../action/message.js';
+import * as conversationActions from '../../action/conversation.js';
 
 class App extends React.Component {
   render() {
@@ -21,10 +23,11 @@ class App extends React.Component {
           <div className='columns'>
             <Header />
             <Route exact path='/' component={Landing} />
-            <Route exact path='/enter' component={Landing} />
-            <Route exact path='/create' component={Landing} />
-            <Route exact path='/sender' component={Profile} />
-            <Route exact path='/messages' component={Dashboard} />
+            <Route exact path='/login' component={Landing} />
+            <Route exact path='/signup' component={Landing} />
+            <Route exact path='/profile' component={Profile} />
+            <Route exact path='/dashboard' component={Dashboard} />
+            <Route path='/conversations/:id' component={Conversation} />
             <Route path='*' component={AuthRedirect} />
           </div>
         </BrowserRouter>
@@ -34,13 +37,14 @@ class App extends React.Component {
 }
 
 let mapStateToProps = (state) => ({
+  profile: state.profile,
   loggedIn: !!state.token,
-  clientProfile: state.clientProfile,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchMessages: () => dispatch(message.fetch()),
-  fetchClientProfile: () => dispatch(clientProfile.fetch()),
+  fetchProfile: () => dispatch(profileActions.fetch()),
+  fetchMessages: () => dispatch(messageActions.fetch()),
+  fetchConversations: () => dispatch(conversationActions.fetch()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -5,7 +5,7 @@ import * as util from '../../lib/util.js';
 let emptyState = {
   username: '',
   usernameDirty: false,
-  usernameError: 'Conversation Name is required',
+  usernameError: 'Username is required',
   email: '',
   emailDirty: false,
   emailError: 'Email is required',
@@ -25,13 +25,16 @@ class AuthForm extends React.Component {
   }
 
   validateChange(name, value) {
-    if (this.props.type === 'enter') {
+    if (this.props.type === 'login') {
       return null;
     }
     switch (name) {
       case 'username':
         if (value.length < 6) {
-          return 'Conversation Name requires 6 or more characters';
+          return 'Username requires 6 or more characters';
+        }
+        if (!validator.isAlphanumeric(value)) {
+          return 'Conversation Name requires letters and numbers';
         }
         return null;
       case 'email':
@@ -61,25 +64,23 @@ class AuthForm extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     let {nameError, emailError, passwordError} = this.state;
-    if (this.props.type === 'enter' || !nameError && !emailError && !passwordError) {
+    if (this.props.type === 'login' || !nameError && !emailError && !passwordError) {
       this.props.onComplete(this.state);
       this.setState(emptyState);
     } else {
       this.setState({
-        usernameDirty: true,
+        submitted: true,
         emailDirty: true,
+        usernameDirty: true,
         passwordDirty: true,
-        submitted: true
       });
     }
   }
   
   render() {
-    let {
-      type,
-    } = this.props;
+    let {type} = this.props;
 
-    type = type === 'enter' ? type : 'create';
+    type = type === 'login' ? type : 'signup';
 
     return (
       <form 
@@ -93,13 +94,13 @@ class AuthForm extends React.Component {
           className={util.renderIf(
             this.state.usernameDirty && this.state.usernameError, 'invalid')}
           name='username'
-          placeholder='name'
+          placeholder='username'
           type='text'
           value={this.state.username}
           onChange={this.handleChange}
         />
 
-        {util.renderIf(type != 'enter',
+        {util.renderIf(type != 'login',
           <div>
             {util.renderIf(this.state.emailDirty, 
               <p className='alert'>{this.state.emailError}</p>)}

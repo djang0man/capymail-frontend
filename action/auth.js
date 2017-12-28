@@ -2,6 +2,7 @@
 
 import superagent from 'superagent';
 import * as util from '../lib/util.js';
+
 window.util = util;
 
 export const tokenSet = (token) => ({

@@ -10,14 +10,14 @@ export const validateProfile = (profile) => {
   }
 };
 
-let initialState = rehydrateLocalStorage('clientProfile', null);
+let initialState = rehydrateLocalStorage('profile', null);
 
 export default (state=initialState, {type, payload}) => {
   switch(type) {
-    case 'CLIENT_PROFILE_SET': 
+    case 'PROFILE_SET': 
       validateProfile(payload);
       return payload;
-    case 'CLIENT_PROFILE_FAILED': 
+    case 'PROFILE_SET_FAILED': 
       return null;
     case 'TOKEN_REMOVE':
       return null;

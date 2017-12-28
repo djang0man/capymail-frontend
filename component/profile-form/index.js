@@ -26,7 +26,7 @@ class ProfileForm extends React.Component {
   }
 
   validateChange(name, value) {
-    if (this.props.type === 'enter') {
+    if (this.props.type === 'login') {
       return null;
     }
     switch (name) {
@@ -104,7 +104,7 @@ class ProfileForm extends React.Component {
           onChange={this.handleChange}
         />
 
-        <button className='button' type='submit'>{this.props.profile ? 'update' : 'create'} Sender</button>
+        <button className='button' type='submit'>{this.props.profile ? 'update' : 'create'} Profile</button>
       </form>
     )
   }

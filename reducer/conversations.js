@@ -1,10 +1,8 @@
 export default (state=[], {type, payload}) => {
   switch(type){
-    case 'MESSAGES_SET': 
+    case 'CONVERSATIONS_SET': 
       return payload;
-    case 'MESSAGES_UNSET':
-      return [];
-    case 'MESSAGE_CREATE':
+    case 'CONVERSATION_CREATE':
       return [...state, payload];
     case 'TOKEN_REMOVE':
       return [];

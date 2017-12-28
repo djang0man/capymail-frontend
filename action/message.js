@@ -3,9 +3,13 @@
 import superagent from 'superagent';
 import realtime from '../lib/realtime.js';
 
-export const set = (user) => ({
+export const set = (conversation) => ({
   type: 'MESSAGES_SET',
-  payload: user,
+  payload: conversation,
+});
+
+export const unset = () => ({
+  type: 'MESSAGES_UNSET',
 });
 
 export const create = (message) => ({
@@ -19,11 +23,15 @@ export const failed = () => ({
 
 export const createRequest = (message) => (store) => {
   let body;
-  let {token, clientProfile} = store.getState(); 
+  let {token, conversation} = store.getState(); 
+  let request = {
+    message,
+    conversation,
+  };
   return superagent.post(`${__API_URL__}/messages`)
   .set('Authorization', `Bearer ${token}`)
   .set('Content-Type', 'application/json')
-  .send(message)
+  .send(request)
   .then(res => {
     body = res.body;
     return store.dispatch(create(body));
@@ -46,10 +54,24 @@ export const createRequest = (message) => (store) => {
 };
 
 export const fetch = () => (store) => {
-  let {token, clientProfile} = store.getState();
+  let {token, conversation} = store.getState();
   return superagent.get(`${__API_URL__}/messages`)
   .set('Authorization', `Bearer ${token}`)
-  .query(clientProfile)
+  .query(conversation)
+  .then(res => {
+    return store.dispatch(set(res.body));
+  })
+  .catch((err) => {
+    console.error(err);
+    return store.dispatch(failed());
+   });
+};
+
+export const fetchById = (id) => (store) => {
+  let {token} = store.getState();
+  return superagent.get(`${__API_URL__}/messages`)
+  .set('Authorization', `Bearer ${token}`)
+  .query({_id: id})
   .then(res => {
     return store.dispatch(set(res.body));
   })

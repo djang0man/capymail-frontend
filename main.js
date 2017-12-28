@@ -10,8 +10,9 @@ import thunk from './lib/redux-thunk.js';
 import {persist} from './lib/redux-persist.js';
 import reporter from './lib/redux-reporter.js';
 import messageSubscriber from './subscriber/message.js';
+import conversationSubscriber from './subscriber/conversation.js';
 
-const store = createStore(reducer, applyMiddleware(thunk, persist(['clientProfile']), reporter));
+const store = createStore(reducer, applyMiddleware(thunk, persist(['profile']), reporter));
 
 messageSubscriber(store);
 

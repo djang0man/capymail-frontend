@@ -18,33 +18,33 @@ class Header extends React.Component {
   }
 
   render() {
-    let {loggedIn, clientProfile} = this.props;
+    let {loggedIn, profile} = this.props;
     return (
       <header className='header'>
         {util.renderIf(!loggedIn, 
           <div>
             <h1>welcome to capymail</h1>
-            <p>please enter a new or existing conversation below</p>
+            <p>Please login or create an account below:</p>
           </div>
         )}
         {util.renderIf(loggedIn, 
-          <button className='button' onClick={this.handleLogout}>Exit Conversation</button>
+          <button className='button' onClick={this.handleLogout}>Sign Out</button>
         )}
         <nav> 
             {util.renderIf(!loggedIn, 
               <ul> 
                 <li><Link to='/'>Home</Link></li>
-                <li><Link to='/create'>Create New</Link></li>
-                <li><Link to='/enter'>Enter Existing</Link></li>
+                <li><Link to='/login'>Login</Link></li>
+                <li><Link to='/signup'>Signup</Link></li>
               </ul>
             )}
-            {util.renderIf(loggedIn && !clientProfile, 
-              <p>Please enter the sender name to get started:</p> 
+            {util.renderIf(loggedIn && !profile, 
+              <p>Please create a profile to get started:</p> 
             )}
-            {util.renderIf(loggedIn && clientProfile, 
+            {util.renderIf(loggedIn && profile, 
               <ul> 
-                <li><Link to='/sender'>Sender Details</Link></li>
-                <li><Link to='/messages'>Message Stream</Link></li>
+                <li><Link to='/profile'>Profile</Link></li>
+                <li><Link to='/dashboard'>Dashboard</Link></li>
               </ul>
             )}
         </nav>
@@ -55,7 +55,7 @@ class Header extends React.Component {
 
 const mapStateToProps = (state) => ({
   loggedIn: !!state.token,
-  clientProfile: state.clientProfile,
+  profile: state.profile,
 });
 
 const mapDispatchToProps = (dispatch) => ({

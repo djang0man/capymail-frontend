@@ -30,10 +30,9 @@ class MessageForm extends React.Component {
       ...emptyState,
       // jshint ignore:end
       editorState: EditorState.createEmpty(),
-      senderEmail: this.props.clientProfile.email,
-      senderFirstName: this.props.clientProfile.firstName,
-      senderLastName: this.props.clientProfile.lastName,
-      clientProfile: this.props.clientProfile,
+      senderEmail: this.props.profile.email,
+      senderFirstName: this.props.profile.firstName,
+      senderLastName: this.props.profile.lastName,
     };
     
     // jshint ignore:start
@@ -89,10 +88,10 @@ class MessageForm extends React.Component {
       this.setState(this.emptyState);
     } else {
       this.setState({
-        recipientEmailDirty: true,
+        submitted: true,
         subjectDirty: true,
         contentDirty: true,
-        submitted: true,
+        recipientEmailDirty: true,
       });
     }
   }
@@ -207,12 +206,14 @@ const styleMap = {
     padding: 2,
   },
 };
+
 function getBlockStyle(block) {
   switch (block.getType()) {
     case 'blockquote': return 'RichEditor-blockquote';
     default: return null;
   }
 }
+
 class StyleButton extends React.Component {
   constructor() {
     super();
@@ -233,6 +234,7 @@ class StyleButton extends React.Component {
     );
   }
 }
+
 const BLOCK_TYPES = [
   {label: 'H1', style: 'header-one'},
   {label: 'H2', style: 'header-two'},
@@ -244,6 +246,7 @@ const BLOCK_TYPES = [
   {label: 'UL', style: 'unordered-list-item'},
   {label: 'OL', style: 'ordered-list-item'},
 ];
+
 const BlockStyleControls = (props) => {
   const {editorState} = props;
   const selection = editorState.getSelection();
@@ -265,12 +268,14 @@ const BlockStyleControls = (props) => {
     </div>
   );
 };
+
 var INLINE_STYLES = [
   {label: 'Bold', style: 'BOLD'},
   {label: 'Italic', style: 'ITALIC'},
   {label: 'Underline', style: 'UNDERLINE'},
   {label: 'Monospace', style: 'CODE'},
 ];
+
 const InlineStyleControls = (props) => {
   var currentStyle = props.editorState.getCurrentInlineStyle();
   return (
@@ -288,9 +293,9 @@ const InlineStyleControls = (props) => {
   );
 };
 
-
 let mapStateToProps = (state) => ({
-  clientProfile: state.clientProfile,
+  profile: state.profile,
+  conversation: state.conversation,
 });
 
 export default connect(mapStateToProps)(MessageForm);
