@@ -1,5 +1,6 @@
 'use strict';
 
+require('dotenv').config();
 const express = require('express');
 
 express()
@@ -8,3 +9,4 @@ express()
   .listen(process.env.PORT, () => {
     console.log('server up', process.env.PORT);
 });
+
