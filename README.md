@@ -16,5 +16,6 @@ CLIENT_URL=http://localhost:8080
 
 ## Start
 
-* Build the UI `npm run ui_build`
-* Start the UI server `npm run ui_start` | `npm run ui_watch` for active development
+* Active dev `npm run watch`
+* Build the UI `npm run build`
+* Start the UI server `npm run start`
