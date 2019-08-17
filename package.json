@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "webpack.config.js",
+  "engines": {
+    "node": "12.7.0"
+  },
   "scripts": {
     "build": "webpack",
     "start": "node ./index.js",
