@@ -6,7 +6,7 @@ const {DefinePlugin, EnvironmentPlugin} = require('webpack');
 const CleanPlugin = require('clean-webpack-plugin');
 const UglifyPlugin = require('uglifyjs-webpack-plugin');
 const HTMLPlugin = require('html-webpack-plugin');
-const ExtractPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -18,7 +18,9 @@ let plugins = [
   new EnvironmentPlugin({
     NODE_ENV: process.env.NODE_ENV,
   }),
-  new ExtractPlugin('bundle.[hash].css'),
+  new MiniCssExtractPlugin({
+    filename: 'bundle.[hash].css'
+  }),
 ];
 
 if(production){
@@ -46,25 +48,21 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        query: {
-          presets: ['react', 'env'],
-        },
       },
       {
         test:  /\.(css|scss).*/,
-        loader: ExtractPlugin.extract({
-          use: [
-            'css-loader',
-            'resolve-url-loader',
-            {
-              loader: 'sass-loader',
-              options: {
-                sourceMap: production ? false : true,
-                includePaths: [`${__dirname}/src/style`],
-              }
+        loader: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'resolve-url-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true, 
+              includePaths: [`${__dirname}/src/styles`],
             },
-          ],
-        })
+          }
+        ]
       },
     ],
   },
