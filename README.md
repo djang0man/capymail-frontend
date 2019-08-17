@@ -9,6 +9,7 @@ capymail frontend
 Include a `.env` file with the following environment variables:
 
 ```
+PORT=8080
 API_PORT=8000
 API_URL=http://localhost:8000
 CLIENT_URL=http://localhost:8080
