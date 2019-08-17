@@ -2,10 +2,10 @@
 
 require('dotenv').config();
 
-const {DefinePlugin, EnvironmentPlugin} = require('webpack');
-const CleanPlugin = require('clean-webpack-plugin');
-const UglifyPlugin = require('uglifyjs-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { DefinePlugin, EnvironmentPlugin } = require('webpack');
 const HTMLPlugin = require('html-webpack-plugin');
+const UglifyPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const production = process.env.NODE_ENV === 'production';
@@ -26,7 +26,7 @@ let plugins = [
 if(production){
   plugins = plugins.concat([
     new UglifyPlugin(),
-    new CleanPlugin(),
+    new CleanWebpackPlugin(),
   ]);
 }
 
