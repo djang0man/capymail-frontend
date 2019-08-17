@@ -35,7 +35,8 @@ module.exports = {
   devtool: production ? undefined : 'source-map',
   entry: `${__dirname}/main.js`,
   devServer: {
-    historyApiFallback: true,
+    port: process.env.PORT,
+    historyApiFallback: true
   },
   output: {
     filename: 'bundle.[hash].js',
@@ -47,7 +48,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        loader: 'babel-loader'
       },
       {
         test:  /\.(css|scss).*/,

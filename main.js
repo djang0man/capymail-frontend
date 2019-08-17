@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import {Provider} from 'react-redux';
-import {createStore, applyMiddleware} from 'redux';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
 
 import './lib/realtime.js';
 import reducer from './reducer';
 import App from './component/app';
 import thunk from './lib/redux-thunk.js';
-import {persist} from './lib/redux-persist.js';
+import { persist } from './lib/redux-persist.js';
 import reporter from './lib/redux-reporter.js';
 import messageSubscriber from './subscriber/message.js';
 import conversationSubscriber from './subscriber/conversation.js';
@@ -22,7 +22,8 @@ let container = document.createElement('div');
 document.body.appendChild(container);
 
 ReactDom.render(
-  <Provider store={store}>
+  <Provider store={ store }>
     <App />
   </Provider>
 , container)
+
