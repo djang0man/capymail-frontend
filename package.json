@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/stuartkershaw/capymail-frontend#readme",
   "dependencies": {
+    "dotenv": "^8.0.0",
     "draft-js": "^0.11.0",
     "draftjs-to-html": "^0.8.4",
     "express": "^4.17.1",
@@ -45,7 +46,6 @@
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.2.0",
-    "dotenv": "^8.0.0",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.12.0",
