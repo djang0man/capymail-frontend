@@ -23,3 +23,6 @@ NODE_ENV=development
 * Active dev `npm run watch`
 * Build the UI `npm run build`
 * Start the UI server `npm run start`
+
+## Next steps
+* Cleanup lifecycle hooks and rendering.
