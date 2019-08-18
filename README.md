@@ -4,6 +4,8 @@ capymail frontend
 ===
 > Realtime messaging with mailgun and socket.io
 
+UI for https://github.com/stuartkershaw/capymail-backend
+
 ## Configure
 
 Include a `.env` file with the following environment variables:
