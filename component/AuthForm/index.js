@@ -34,9 +34,6 @@ class AuthForm extends React.Component {
         if (value.length < 6) {
           return 'Username requires 6 or more characters';
         }
-        if (!validator.isAlphanumeric(value)) {
-          return 'Conversation Name requires letters and numbers';
-        }
         return null;
       case 'email':
         if (!validator.isEmail(value)) {
