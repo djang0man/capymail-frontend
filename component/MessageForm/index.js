@@ -2,11 +2,10 @@ import './RichEditor.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import validator from 'validator';
-import {connect} from 'react-redux';
-import {Editor, EditorState, RichUtils, convertToRaw, ContentState} from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import * as util from '../../lib/util.js';
+import { Editor, EditorState, RichUtils, convertToRaw, ContentState } from 'draft-js';
 
 let emptyState = {
   recipientEmail: '',
@@ -25,6 +24,7 @@ let emptyState = {
 class MessageForm extends React.Component {
   constructor(props){
     super(props);
+
     this.state = {
       // jshint ignore:start
       ...emptyState,
@@ -63,7 +63,8 @@ class MessageForm extends React.Component {
   }
   
   handleChange(e) {
-    let {name, value} = e.target;
+    let { name, value } = e.target;
+
     this.setState({
       [name]: value,
       [`${name}Dirty`]: true,
@@ -81,8 +82,11 @@ class MessageForm extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+
     console.log(this.state);
-    let {recipientEmailError, hasContent} = this.state;
+
+    let { recipientEmailError, hasContent } = this.state;
+
     if (!recipientEmailError && hasContent) {
       this.props.onComplete(this.state);
       this.setState(this.emptyState);
@@ -98,10 +102,12 @@ class MessageForm extends React.Component {
   
   _handleKeyCommand(command, editorState) {
     const newState = RichUtils.handleKeyCommand(editorState, command);
+
     if (newState) {
       this.onChange(newState);
       return true;
     }
+
     return false;
   }
   
@@ -129,65 +135,80 @@ class MessageForm extends React.Component {
   }
 
   render() {
-    const {editorState} = this.state;
+    const {
+      editorState,
+      recipientEmail,
+      recipientEmailDirty,
+      recipientEmailError,
+      subject,
+      subjectDirty,
+      hasContent,
+      contentDirty,
+      contentError
+    } = this.state;
+
     let className = 'RichEditor-editor';
+
     var contentState = editorState.getCurrentContent();
+
     if (!contentState.hasText()) {
       if (contentState.getBlockMap().first().getType() !== 'unstyled') {
         className += ' RichEditor-hidePlaceholder';
       }
     }
+
     return (
       <form 
-        onSubmit={this.handleSubmit}
+        onSubmit={ this.handleSubmit }
         className='message-form'>
         
         <div>
-          {util.renderIf(this.state.recipientEmailDirty, 
-            <p className='alert'>{this.state.recipientEmailError}</p>)}
+          {recipientEmailDirty && 
+            <p className='alert'>{ recipientEmailError }</p>
+          }
           <input
-            className={util.renderIf(
-              this.state.recipientEmailDirty && this.state.recipientEmailError, 'invalid')}
+            className={ recipientEmailDirty && recipientEmailError ? 'invalid' : null }
+            type='email'
             name='recipientEmail'
             placeholder='recipient email'
-            type='email'
-            value={this.state.recipientEmail}
-            onChange={this.handleChange}
+            value={ recipientEmail }
+            onChange={ this.handleChange }
           />
         </div>
 
         <div>
           <input
+            type='text'
             name='subject'
             placeholder='message subject'
-            type='text'
-            value={this.state.subject}
-            onChange={this.handleChange}
+            value={ subject }
+            onChange={ this.handleChange }
           />
         </div>
         
-        {util.renderIf(this.state.contentDirty && !this.state.hasContent, 
-          <p className='alert'>{this.state.contentError}</p>)} 
+        {contentDirty && !hasContent &&
+          <p className='alert'>{ contentError }</p>
+        } 
         
         <div className="RichEditor-root">
           <BlockStyleControls
-            editorState={editorState}
-            onToggle={this.toggleBlockType}
+            editorState={ editorState }
+            onToggle={ this.toggleBlockType }
           />
           <InlineStyleControls
-            editorState={editorState}
-            onToggle={this.toggleInlineStyle}
+            editorState={ editorState }
+            onToggle={ this.toggleInlineStyle }
           />
-          <div className={className} onClick={this.focus}>
+          <div className={ className } onClick={ this.focus }>
             <Editor
-              blockStyleFn={getBlockStyle}
-              customStyleMap={styleMap}
-              editorState={editorState}
-              handleKeyCommand={this.handleKeyCommand}
-              onChange={this.onChange}
-              onTab={this.onTab}
-              ref={(ref) => this.editor = ref}
-              spellCheck={true}
+              blockStyleFn={ getBlockStyle }
+              customStyleMap={ styleMap }
+              editorState={ editorState }
+              handleKeyCommand={ this.handleKeyCommand }
+              onChange={ this.onChange }
+              onTab={ this.onTab }
+              ref={ ref => this.editor = ref }
+              spellCheck={ true }
             />
           </div>
         </div>
@@ -215,54 +236,61 @@ function getBlockStyle(block) {
 }
 
 class StyleButton extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    let { style } = this.props;
+
     this.onToggle = (e) => {
       e.preventDefault();
-      this.props.onToggle(this.props.style);
+      this.props.onToggle(style);
     };
   }
   render() {
+    let { label } = this.props;
     let className = 'RichEditor-styleButton';
+
     if (this.props.active) {
       className += ' RichEditor-activeButton';
     }
+
     return (
-      <span className={className} onMouseDown={this.onToggle}>
-        {this.props.label}
+      <span className={ className } onMouseDown={ this.onToggle }>
+        { label }
       </span>
     );
   }
 }
 
 const BLOCK_TYPES = [
-  {label: 'H1', style: 'header-one'},
-  {label: 'H2', style: 'header-two'},
-  {label: 'H3', style: 'header-three'},
-  {label: 'H4', style: 'header-four'},
-  {label: 'H5', style: 'header-five'},
-  {label: 'H6', style: 'header-six'},
-  {label: 'Blockquote', style: 'blockquote'},
-  {label: 'UL', style: 'unordered-list-item'},
-  {label: 'OL', style: 'ordered-list-item'},
+  { label: 'H1', style: 'header-one' },
+  { label: 'H2', style: 'header-two' },
+  { label: 'H3', style: 'header-three' },
+  { label: 'H4', style: 'header-four' },
+  { label: 'H5', style: 'header-five' },
+  { label: 'H6', style: 'header-six' },
+  { label: 'Blockquote', style: 'blockquote' },
+  { label: 'UL', style: 'unordered-list-item' },
+  { label: 'OL', style: 'ordered-list-item' },
 ];
 
 const BlockStyleControls = (props) => {
-  const {editorState} = props;
+  const { editorState } = props;
   const selection = editorState.getSelection();
   const blockType = editorState
     .getCurrentContent()
     .getBlockForKey(selection.getStartKey())
     .getType();
+
   return (
     <div className="RichEditor-controls">
       {BLOCK_TYPES.map((type) =>
         <StyleButton
-          key={type.label}
-          active={type.style === blockType}
-          label={type.label}
-          onToggle={props.onToggle}
-          style={type.style}
+          key={ type.label }
+          active={ type.style === blockType }
+          label={ type.label }
+          onToggle={ props.onToggle }
+          style={ type.style }
         />
       )}
     </div>
@@ -270,23 +298,24 @@ const BlockStyleControls = (props) => {
 };
 
 var INLINE_STYLES = [
-  {label: 'Bold', style: 'BOLD'},
-  {label: 'Italic', style: 'ITALIC'},
-  {label: 'Underline', style: 'UNDERLINE'},
-  {label: 'Monospace', style: 'CODE'},
+  { label: 'Bold', style: 'BOLD' },
+  { label: 'Italic', style: 'ITALIC' },
+  { label: 'Underline', style: 'UNDERLINE' },
+  { label: 'Monospace', style: 'CODE' },
 ];
 
 const InlineStyleControls = (props) => {
   var currentStyle = props.editorState.getCurrentInlineStyle();
+
   return (
     <div className="RichEditor-controls">
       {INLINE_STYLES.map(type =>
         <StyleButton
-          key={type.label}
-          active={currentStyle.has(type.style)}
-          label={type.label}
-          onToggle={props.onToggle}
-          style={type.style}
+          key={ type.label }
+          active={ currentStyle.has(type.style) }
+          label={ type.label }
+          onToggle={ props.onToggle }
+          style={ type.style }
         />
       )}
     </div>
@@ -295,7 +324,8 @@ const InlineStyleControls = (props) => {
 
 let mapStateToProps = (state) => ({
   profile: state.profile,
-  conversation: state.conversation,
+  conversation: state.conversation
 });
 
 export default connect(mapStateToProps)(MessageForm);
+

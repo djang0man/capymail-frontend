@@ -1,6 +1,5 @@
 import React from 'react';
 import validator from 'validator';
-import * as util from '../../lib/util.js';
 
 let emptyState = {
   firstName: '',
@@ -14,7 +13,9 @@ let emptyState = {
 class ProfileForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = props.profile ? {...emptyState, ...props.profile} : emptyState;
+
+    this.state = props.profile ? { ...emptyState, ...props.profile } : emptyState;
+
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
@@ -29,6 +30,7 @@ class ProfileForm extends React.Component {
     if (this.props.type === 'login') {
       return null;
     }
+
     switch (name) {
       case 'firstName':
         if (value.length < 1) {
@@ -52,7 +54,8 @@ class ProfileForm extends React.Component {
   }
 
   handleChange(e) {
-    let {name, value} = e.target;
+    let { name, value } = e.target;
+
     this.setState({
       [name]: value,
       [`${name}Dirty`]: true,
@@ -62,52 +65,67 @@ class ProfileForm extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+
     this.props.onComplete(this.state);
     this.setState(emptyState);
   }
 
   render() {
+    let {
+      email,
+      firstName,
+      firstNameDirty,
+      firstNameError,
+      lastName,
+      lastNameDirty,
+      lastNameError,
+      profile
+    } = this.state;
+
     return (
       <form
         className='profile-form'
-        onSubmit={this.handleSubmit}>
+        onSubmit={ this.handleSubmit }>
         
-        {util.renderIf(this.state.email,
+        {email &&
           <input
-            name='email'
             type='text'
-            value={this.state.email}
+            name='email'
             readOnly='readOnly'
-          />)}
+            value={ email }
+          />
+        }
 
-        {util.renderIf(this.state.firstNameDirty, 
-          <p className='alert'>{this.state.firstNameError}</p>)}
+        {firstNameDirty &&
+          <p className='alert'>{ firstNameError }</p>
+        }
         <input
-          className={util.renderIf(
-            this.state.firstNameDirty && this.state.firstNameError, 'invalid')}
+          className={ firstNameDirty && firstNameError ? 'invalid' : null }
+          type='text'
           name='firstName'
           placeholder='First Name'
-          type='text'
-          value={this.state.firstName}
-          onChange={this.handleChange}
+          value={ firstName }
+          onChange={ this.handleChange }
         />
         
-        {util.renderIf(this.state.lastNameDirty, 
-          <p className='alert'>{this.state.lastNameError }</p>)}
+        {lastNameDirty &&
+          <p className='alert'>{ lastNameError }</p>
+        }
+
         <input
-          className={util.renderIf(
-            this.state.lastNameDirty && this.state.lastNameError, 'invalid')}
+          className={ lastNameDirty && lastNameError ? 'invalid' : null }
+          type='text'
           name='lastName'
           placeholder='Last Name'
-          type='text'
-          value={this.state.lastName}
-          onChange={this.handleChange}
+          value={ lastName }
+          onChange={ this.handleChange }
         />
 
-        <button className='button' type='submit'>{this.props.profile ? 'update' : 'create'} Profile</button>
+        <button className='button' type='submit'>{ profile ? 'update' : 'create' } Profile</button>
       </form>
     )
   }
 }
 
 export default ProfileForm;
+

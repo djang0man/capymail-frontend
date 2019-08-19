@@ -1,6 +1,5 @@
 import React from 'react';
 import validator from 'validator';
-import * as util from '../../lib/util.js';
 
 let emptyState = {
   username: '',
@@ -18,6 +17,7 @@ let emptyState = {
 class AuthForm extends React.Component {
   constructor (props) {
     super(props);
+
     this.state = emptyState;
     this.handleChange = this.handleChange.bind(this);
     this.validateChange = this.validateChange.bind(this);
@@ -28,6 +28,7 @@ class AuthForm extends React.Component {
     if (this.props.type === 'login') {
       return null;
     }
+
     switch (name) {
       case 'username':
         if (value.length < 6) {
@@ -53,7 +54,8 @@ class AuthForm extends React.Component {
   }
 
   handleChange(e) {
-    let {name, value} = e.target;
+    let { name, value } = e.target;
+
     this.setState({
       [name]: value,
       [`${name}Dirty`]: true,
@@ -63,8 +65,16 @@ class AuthForm extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    let {nameError, emailError, passwordError} = this.state;
-    if (this.props.type === 'login' || !nameError && !emailError && !passwordError) {
+
+    let { type } = this.props;
+
+    let {
+      nameError,
+      emailError,
+      passwordError 
+    } = this.state;
+
+    if (type === 'login' || !nameError && !emailError && !passwordError) {
       this.props.onComplete(this.state);
       this.setState(emptyState);
     } else {
@@ -78,7 +88,19 @@ class AuthForm extends React.Component {
   }
   
   render() {
-    let {type} = this.props;
+    let { type } = this.props;
+
+    let {
+      username,
+      usernameError,
+      usernameDirty,
+      email,
+      emailDirty,
+      emailError,
+      password,
+      passwordDirty,
+      passwordError
+    } = this.state;
 
     type = type === 'login' ? type : 'signup';
 
@@ -86,52 +108,53 @@ class AuthForm extends React.Component {
       <form 
         className='auth-form'
         noValidate
-        onSubmit={this.handleSubmit}>
+        onSubmit={ this.handleSubmit }>
 
-        {util.renderIf(this.state.usernameDirty, 
-          <p className='alert'>{this.state.usernameError}</p>)}
+        {usernameDirty &&
+          <p className='alert'>{ usernameError }</p>
+        }
         <input
-          className={util.renderIf(
-            this.state.usernameDirty && this.state.usernameError, 'invalid')}
+          className={ usernameDirty && usernameError ? 'invalid' : null }
+          type='text'
           name='username'
           placeholder='username'
-          type='text'
-          value={this.state.username}
-          onChange={this.handleChange}
+          value={ username }
+          onChange={ this.handleChange }
         />
 
-        {util.renderIf(type != 'login',
+        {type != 'login' &&
           <div>
-            {util.renderIf(this.state.emailDirty, 
-              <p className='alert'>{this.state.emailError}</p>)}
+            {emailDirty &&
+              <p className='alert'>{ emailError }</p>
+            }
             <input
-              className={util.renderIf(
-                this.state.emailDirty && this.state.emailError, 'invalid')}
+              className={ emailDirty && emailError ? 'invalid' : null }
+              type='email'
               name='email'
               placeholder='email'
-              type='email'
-              value={this.state.email}
-              onChange={this.handleChange}
+              value={ email }
+              onChange={ this.handleChange }
             />
           </div>
-        )}
+        }
 
-        {util.renderIf(this.state.passwordDirty, 
-          <p className='alert'>{this.state.passwordError}</p>)}
+        {passwordDirty &&
+          <p className='alert'>{ passwordError }</p>
+        }
         <input
-          className={util.renderIf(
-            this.state.passwordDirty && this.state.passwordError, 'invalid')}
+          className={ passwordDirty && passwordError ? 'invalid' : null }
           name='password'
           placeholder='password'
           type='password'
-          value={this.state.password}
-          onChange={this.handleChange}
+          value={ password }
+          onChange={ this.handleChange }
         />
 
-        <button className='button' type='submit'>{type}</button>
+        <button className='button' type='submit'>{ type }</button>
       </form>
     )
   }
 }
 
 export default AuthForm;
+

@@ -1,12 +1,17 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {Redirect} from 'react-router-dom';
-import * as util from '../../lib/util.js';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 class AuthRedirect extends React.Component {
-  componentWillMount() {
-    let {loggedIn, profile, location} = this.props;
-    let {pathname} = location;
+  componentDidMount() {
+    let {
+      profile,
+      loggedIn,
+      location
+    } = this.props;
+
+    let { pathname } = location;
+
     if (!loggedIn) {
       this.props.history.push('/');
     } else {
@@ -29,7 +34,8 @@ class AuthRedirect extends React.Component {
 
 const mapStateToProps = state => ({
   profile: state.profile,
-  loggedIn: !!state.token,
+  loggedIn: !!state.token
 });
 
 export default connect(mapStateToProps)(AuthRedirect);
+

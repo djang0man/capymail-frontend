@@ -1,7 +1,6 @@
 import React from 'react';
 import validator from 'validator';
-import {connect} from 'react-redux';
-import * as util from '../../lib/util.js';
+import { connect } from 'react-redux';
 
 let emptyState = {
   title: '',
@@ -12,6 +11,7 @@ let emptyState = {
 class ConversationForm extends React.Component {
   constructor(props){
     super(props);
+
     this.state = {
       // jshint ignore:start
       ...emptyState,
@@ -40,7 +40,7 @@ class ConversationForm extends React.Component {
   }
 
   handleChange(e) {
-    let {name, value} = e.target;
+    let { name, value } = e.target;
     this.setState({
       [name]: value,
       [`${name}Dirty`]: true,
@@ -50,8 +50,11 @@ class ConversationForm extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+
     console.log(this.state);
-    let {titleError} = this.state;
+
+    let { titleError } = this.state;
+
     if (!titleError) {
       this.props.onComplete(this.state);
       this.setState(this.emptyState);
@@ -64,21 +67,27 @@ class ConversationForm extends React.Component {
   }
 
   render() {
+    let {
+      title,
+      titleDirty,
+      titleError
+    } = this.state;
+
     return (
       <form
         className='conversation-form'
         onSubmit={this.handleSubmit}>
         
-        {util.renderIf(this.state.titleDirty, 
-          <p className='alert'>{this.state.titleError}</p>)}
+        {titleDirty &&
+          <p className='alert'>{ titleError }</p>
+        }
         <input
-          className={util.renderIf(
-            this.state.titleDirty && this.state.titleError, 'invalid')}
+          className={ titleDirty && titleError ? 'invalid' : null }
+          type='text'
           name='title'
           placeholder='Title'
-          type='text'
-          value={this.state.title}
-          onChange={this.handleChange}
+          value={ title }
+          onChange={ this.handleChange }
         />
         
         <button className='button' type='submit'>Create Conversation</button>
@@ -88,7 +97,8 @@ class ConversationForm extends React.Component {
 }
 
 let mapStateToProps = (state) => ({
-  profile: state.profile,
+  profile: state.profile
 });
 
 export default connect(mapStateToProps)(ConversationForm);
+
