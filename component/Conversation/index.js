@@ -11,17 +11,25 @@ class Conversation extends React.Component {
   componentDidMount() {
     let id = this.props.match.params.id;
     this.props.fetchConversationById(id);
+    this.props.fetchMessagesById(id);
   }
 
   render() {
-    let { conversation } = this.props;
-    let id = this.props.match.params.id;
+    let { conversation, messages } = this.props;
 
     return (
       <div className='conversation'>
-        <h2>{ conversation.title }</h2>
-        <h3>Messages</h3>
-        <MessageList conversationId={ id } /> 
+        {conversation.title &&
+          <h2>{ conversation.title }</h2>
+        }
+
+        {conversation.title && messages.length > 0 &&
+          <>
+            <h3>Messages</h3>
+            <MessageList messages={ messages } />
+          </>
+        }
+
         <MessageForm onComplete={ this.props.messageCreate } />
       </div>
     )
@@ -29,12 +37,14 @@ class Conversation extends React.Component {
 }
 
 let mapStateToProps = (state) => ({
+  messages: state.messages,
   conversation: state.conversation
 });
 
 let mapDispatchToProps = (dispatch) => ({
-  messageCreate: (message) => dispatch(messageActions.createRequest(message)),
-  fetchConversationById: (id) => dispatch(conversationActions.fetchById(id))
+  fetchMessagesById: (id) => dispatch(messageActions.fetchById(id)),
+  fetchConversationById: (id) => dispatch(conversationActions.fetchById(id)),
+  messageCreate: (message) => dispatch(messageActions.createRequest(message))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Conversation);

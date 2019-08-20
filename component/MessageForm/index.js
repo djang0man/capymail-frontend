@@ -42,7 +42,6 @@ class MessageForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.validateChange = this.validateChange.bind(this);
     
-    this.onTab = this._onTab.bind(this);
     this.focus = () => this.editor.focus();
     this.toggleBlockType = this._toggleBlockType.bind(this);
     this.handleKeyCommand = this._handleKeyCommand.bind(this);
@@ -108,11 +107,6 @@ class MessageForm extends React.Component {
     }
 
     return false;
-  }
-  
-  _onTab(e) {
-    const maxDepth = 4;
-    this.onChange(RichUtils.onTab(e, this.state.editorState, maxDepth));
   }
   
   _toggleBlockType(blockType) {
@@ -204,7 +198,6 @@ class MessageForm extends React.Component {
               editorState={ editorState }
               handleKeyCommand={ this.handleKeyCommand }
               onChange={ this.onChange }
-              onTab={ this.onTab }
               ref={ ref => this.editor = ref }
               spellCheck={ true }
             />

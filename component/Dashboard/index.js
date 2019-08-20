@@ -19,8 +19,8 @@ class Dashboard extends React.Component {
     }
 
     this.props.unsetMessages();
-    this.props.unsetConversation();
     this.props.fetchConversations();
+    this.props.unsetConversation();
   }
   
   render(){
@@ -52,8 +52,8 @@ let mapStateToProps = (state) => ({
 
 let mapDispatchToProps = (dispatch) => ({
   unsetMessages: () => dispatch(messageActions.unset()),
-  unsetConversation: () => dispatch(conversationActions.unset()),
   fetchConversations: () => dispatch(conversationActions.fetch()),
+  unsetConversation: () => dispatch(conversationActions.unset()),
   conversationCreate: (conversation) => dispatch(conversationActions.createRequest(conversation))
 });
 

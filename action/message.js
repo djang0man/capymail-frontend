@@ -3,7 +3,7 @@
 import superagent from 'superagent';
 import realtime from '../lib/realtime.js';
 
-export const set = (conversation) => ({
+export const set = conversation => ({
   type: 'MESSAGES_SET',
   payload: conversation,
 });
@@ -76,7 +76,7 @@ export const fetchById = id => store => {
 
   return superagent.get(`${__API_URL__}/messages`)
     .set('Authorization', `Bearer ${token}`)
-    .query({_id: id})
+    .query({ _id: id })
       .then(res => {
         return store.dispatch(set(res.body));
       })

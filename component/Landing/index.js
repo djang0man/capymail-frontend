@@ -29,7 +29,7 @@ class Landing extends React.Component {
             this.props.history.push('/dashboard');
           }
         });
-      this.props.fetchConversations();
+      // this.props.fetchConversations();
     }
   }
 
@@ -88,7 +88,7 @@ const mapDispatchToProps = (dispatch) => ({
   login: (user) => dispatch(auth.login(user)),
   signup: (user) => dispatch(auth.signup(user)),
   fetchProfile: () => dispatch(profileActions.fetch()),
-  fetchConversations: () => dispatch(conversationActions.fetch())
+  // fetchConversations: () => dispatch(conversationActions.fetch())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Landing);

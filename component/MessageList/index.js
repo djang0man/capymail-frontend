@@ -20,11 +20,6 @@ class Conversation extends React.Component {
     }
   }
 
-  componentDidMount() {
-    let id = this.props.conversationId;
-    this.props.fetchMessagesById(id);
-  }
-
   render() {
     let { messages } = this.props;
 
@@ -51,13 +46,12 @@ class Conversation extends React.Component {
 }
 
 let mapStateToProps = (state) => ({
+  messages: state.messages,
   conversation: state.conversation,
-  messages: state.messages
 });
 
 let mapDispatchToProps = (dispatch) => ({
-  fetchMessages: () => dispatch(messageActions.fetch()),
-  fetchMessagesById: (id) => dispatch(messageActions.fetchById(id))
+  fetchMessages: () => dispatch(messageActions.fetch())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Conversation); 

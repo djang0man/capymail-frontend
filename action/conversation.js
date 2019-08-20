@@ -5,25 +5,25 @@ import realtime from '../lib/realtime.js';
 
 export const set = user => ({
   type: 'CONVERSATIONS_SET',
-  payload: user,
+  payload: user
 });
 
 export const setOne = user => ({
   type: 'CONVERSATION_SET',
-  payload: user,
+  payload: user
 });
 
 export const unset = () => ({
-  type: 'CONVERSATION_UNSET',
+  type: 'CONVERSATION_UNSET'
 });
 
 export const create = conversation => ({
   type: 'CONVERSATION_CREATE',
-  payload: conversation,
+  payload: conversation
 });
 
 export const failed = () => ({
-  type: 'CONVERSATION_CREATE_FAILED',
+  type: 'CONVERSATION_CREATE_FAILED'
 });
 
 export const createRequest = conversation => store => {
