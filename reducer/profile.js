@@ -1,18 +1,20 @@
-import {rehydrateLocalStorage} from '../lib/redux-persist.js';
+import { rehydrateLocalStorage } from '../lib/redux-persist.js';
 
-export const validateProfile = (profile) => {
+export const validateProfile = profile => {
   if (!profile) {
     throw new Error('Profile required');
   }
-  let {firstName, lastName} = profile;
+
+  const { firstName, lastName } = profile;
+
   if (!firstName || !lastName) {
     throw new Error('__VALIDATION_ERROR__ invalid profile');
   }
 };
 
-let initialState = rehydrateLocalStorage('profile', null);
+const initialState = rehydrateLocalStorage('profile', null);
 
-export default (state=initialState, {type, payload}) => {
+export default (state=initialState, { type, payload }) => {
   switch(type) {
     case 'PROFILE_SET': 
       validateProfile(payload);
@@ -25,3 +27,4 @@ export default (state=initialState, {type, payload}) => {
       return state;
   }
 };
+

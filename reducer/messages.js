@@ -1,4 +1,4 @@
-export default (state=[], {type, payload}) => {
+export default (state=[], { type, payload }) => {
   switch(type){
     case 'MESSAGES_SET': 
       return payload;
@@ -12,3 +12,4 @@ export default (state=[], {type, payload}) => {
       return state;
   }
 };
+

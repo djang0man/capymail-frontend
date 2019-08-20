@@ -20,12 +20,6 @@ class ProfileForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  componentWillReceiveProps(props) {
-    if (props.profile) {
-      this.setState(props.profile);
-    }
-  }
-
   validateChange(name, value) {
     if (this.props.type === 'login') {
       return null;
@@ -71,6 +65,8 @@ class ProfileForm extends React.Component {
   }
 
   render() {
+    let { profile } = this.props;
+
     let {
       email,
       firstName,
@@ -79,7 +75,6 @@ class ProfileForm extends React.Component {
       lastName,
       lastNameDirty,
       lastNameError,
-      profile
     } = this.state;
 
     return (
@@ -120,7 +115,7 @@ class ProfileForm extends React.Component {
           value={ lastName }
           onChange={ this.handleChange }
         />
-
+        
         <button className='button' type='submit'>{ profile ? 'update' : 'create' } Profile</button>
       </form>
     )

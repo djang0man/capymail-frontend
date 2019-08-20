@@ -12,13 +12,12 @@ let emptyState = {
   recipientEmailDirty: false,
   recipientEmailError: 'Email is required',
   subject: '',
-  hasSubject: false,
   subjectDirty: false,
   content: '',
   hasContent: false,
   contentDirty: false,
   contentError: 'Content is required',
-  submitted: false,
+  submitted: false
 };
 
 class MessageForm extends React.Component {
@@ -141,7 +140,6 @@ class MessageForm extends React.Component {
       recipientEmailDirty,
       recipientEmailError,
       subject,
-      subjectDirty,
       hasContent,
       contentDirty,
       contentError

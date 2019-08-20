@@ -45,7 +45,7 @@ class Profile extends React.Component {
             <h3>{ profile.firstName } { profile.lastName }</h3>
             {editing ? 
               <div>
-                <ProfileForm profile={ profile } onComplete={this.handleUpdate} />
+                <ProfileForm profile={ profile } onComplete={ this.handleUpdate } />
                 <button className='button' onClick={() => this.setState({ editing: false })}>
                   Cancel 
                 </button>

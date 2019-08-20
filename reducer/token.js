@@ -1,8 +1,8 @@
-import {rehydrateCookie} from '../lib/redux-persist.js';
+import { rehydrateCookie } from '../lib/redux-persist.js';
 
-let intialState = rehydrateCookie('X-CapyMail-Token', null);
+const intialState = rehydrateCookie('X-CapyMail-Token', null);
 
-export default (state=intialState, {type, payload}) => {
+export default (state=intialState, { type, payload }) => {
   switch(type) {
     case 'TOKEN_SET':
       return payload;
@@ -12,3 +12,4 @@ export default (state=intialState, {type, payload}) => {
       return state;
   }
 };
+

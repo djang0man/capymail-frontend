@@ -19,26 +19,31 @@ export const logout = () => {
   return tokenRemove();
 };
 
-export const signup = (user) => (store) => {
+export const signup = user => store => {
   return superagent.post(`${__API_URL__}/auth`)
-  .send(user)
-  .withCredentials()
-  .then(res => {
-    console.log('SIGNUP ::', {res});
-    let {token} = JSON.parse(res.text);
-    util.cookieCreate('X-CapyMail-Token', token, 7);
-    return store.dispatch(tokenSet(token));
-  });
+    .send(user)
+    .withCredentials()
+      .then(res => {
+        console.log('SIGNUP ::', { res });
+
+        const { token } = JSON.parse(res.text);
+        util.cookieCreate('X-CapyMail-Token', token, 7);
+
+        return store.dispatch(tokenSet(token));
+      });
 };
 
-export const login = (user) => (store) => {
+export const login = user => store => {
   return superagent.get(`${__API_URL__}/auth`)
-  .auth(user.username, user.password)
-  .withCredentials()
-  .then(res => {
-    console.log('SIGNIN ::', {res});
-    let {token} = JSON.parse(res.text);
-    util.cookieCreate('X-CapyMail-Token', token, 7);
-    return store.dispatch(tokenSet(token));
-  });
+    .auth(user.username, user.password)
+    .withCredentials()
+      .then(res => {
+        console.log('SIGNIN ::', { res });
+
+        const { token } = JSON.parse(res.text);
+        util.cookieCreate('X-CapyMail-Token', token, 7);
+
+        return store.dispatch(tokenSet(token));
+      });
 };
+
