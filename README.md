@@ -25,4 +25,5 @@ NODE_ENV=development
 * Start the UI server `npm run start`
 
 ## Next steps
+* Frontend caching.
 * Cleanup lifecycle hooks and rendering.
