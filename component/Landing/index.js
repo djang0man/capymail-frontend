@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+
 import AuthForm from '../AuthForm';
+
 import * as auth from '../../action/auth.js';
 import * as profileActions from '../../action/profile.js';
-import * as conversationActions from '../../action/conversation.js';
 
 class Landing extends React.Component {
   constructor(props) {
@@ -12,25 +12,6 @@ class Landing extends React.Component {
 
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
-  }
-  
-  componentDidMount() {
-    let {
-      loggedIn 
-    } = this.props;
-
-    if (loggedIn) {
-      this.props.fetchProfile()
-        .then(action => {
-          if (action.type === 'PROFILE_SET') {
-            this.props.history.push('/dashboard');
-          }
-          if (action.type === 'PROFILE_SET_FAILED') {
-            this.props.history.push('/dashboard');
-          }
-        });
-      // this.props.fetchConversations();
-    }
   }
 
   handleLogin(user) {
@@ -57,19 +38,43 @@ class Landing extends React.Component {
     .catch(console.error);
   }
 
+  componentDidMount() {
+    let {
+      profile,
+      loggedIn
+    } = this.props;
+
+    if (loggedIn && profile) {
+      return this.props.history.push('/dashboard');
+    }
+
+    if (loggedIn && !profile) {
+      this.props.fetchProfile()
+        .then(action => {
+          if (action.type === 'PROFILE_SET') {
+            return this.props.history.push('/dashboard');
+          }
+          if (action.type === 'PROFILE_SET_FAILED') {
+            return this.props.history.push('/profile');
+          }
+        });
+    }
+  }
+
   render() {
-    let { location } = this.props;
+    const { pathname } = this.props.location;
     
     return (
       <div className='landing'>
-        {location.pathname === '/signup' &&
+        { console.log('LANDING RENDER') }
+        {pathname === '/signup' &&
           <div>
             <h3>Signup</h3>
             <AuthForm onComplete={ this.handleSignup } />
           </div>
         }
 
-        {location.pathname === '/login' &&
+        {pathname === '/login' &&
           <div>
             <h3>Login</h3>
             <AuthForm type='login' onComplete={ this.handleLogin } />
@@ -81,14 +86,14 @@ class Landing extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  profile: state.profile,
   loggedIn: !!state.token
 });
 
 const mapDispatchToProps = (dispatch) => ({
   login: (user) => dispatch(auth.login(user)),
   signup: (user) => dispatch(auth.signup(user)),
-  fetchProfile: () => dispatch(profileActions.fetch()),
-  // fetchConversations: () => dispatch(conversationActions.fetch())
+  fetchProfile: () => dispatch(profileActions.fetch())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Landing);

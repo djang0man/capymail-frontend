@@ -9,21 +9,30 @@ import * as conversationActions from '../../action/conversation.js';
 
 class Conversation extends React.Component {
   componentDidMount() {
-    let id = this.props.match.params.id;
-    this.props.fetchConversationById(id);
+    const id = this.props.match.params.id;
+    this.props.fetchConversationById(id)
+      .then(response => {
+        if (response.type === 'CONVERSATION_CREATE_FAILED') {
+          this.props.history.push('/dashboard');
+        }
+      })
+      .catch(() => {
+        this.props.history.push('/dashboard');
+      });
     this.props.fetchMessagesById(id);
   }
 
   render() {
-    let { conversation, messages } = this.props;
+    const { conversation, messages } = this.props;
+    const { title } = conversation;
 
     return (
       <div className='conversation'>
-        {conversation.title &&
-          <h2>{ conversation.title }</h2>
+        {title &&
+          <h2>{ title }</h2>
         }
 
-        {conversation.title && messages.length > 0 &&
+        {title && messages.length > 0 &&
           <>
             <h3>Messages</h3>
             <MessageList messages={ messages } />

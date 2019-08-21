@@ -4,23 +4,22 @@ import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+
 import ConversationForm from '../ConversationForm';
+
 import * as messageActions from '../../action/message.js';
 import * as conversationActions from '../../action/conversation.js';
 
 class Dashboard extends React.Component {
   componentDidMount() {
-    let {
-      profile,
-    } = this.props;
-
-    if (!profile) {
-      this.props.history.push('/profile');
-    }
-
     this.props.unsetMessages();
-    this.props.fetchConversations();
     this.props.unsetConversation();
+
+    const { conversations } = this.props;
+
+    if (!conversations || conversations.length === 0) {
+      this.props.fetchConversations();
+    }
   }
   
   render(){
@@ -31,6 +30,7 @@ class Dashboard extends React.Component {
 
     return (
       <div className='dashboard'>
+        { console.log('DASHBOARD RENDER') }
         <h3>Conversations</h3>
         <ol className='conversations'> 
           {conversations.map((conversation, key) => 
@@ -46,7 +46,6 @@ class Dashboard extends React.Component {
 }
 
 let mapStateToProps = (state) => ({
-  profile: state.profile,
   conversations: state.conversations
 });
 

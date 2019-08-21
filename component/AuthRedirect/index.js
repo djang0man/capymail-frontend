@@ -6,28 +6,41 @@ class AuthRedirect extends React.Component {
   componentDidMount() {
     let {
       profile,
+      location,
       loggedIn,
-      location
     } = this.props;
 
     let { pathname } = location;
 
     if (!loggedIn) {
-      this.props.history.push('/');
-    } else {
-      if (pathname === '/' || pathname === '/login' || pathname === '/signup') {
-        if (!profile) {
-          this.props.history.push('/profile');
-        } else {
-          this.props.history.push('/dashboard');
-        }
+      if (pathname !== '/login' && pathname !== '/signup') {
+        return this.props.history.push('/');
       }
     }
 
+    if (loggedIn && !profile) {
+      return this.props.history.push('/profile');
+    }
+
+    if (!pathname.includes('/conversations')) {
+      switch (pathname) {
+        case '/':
+        case '/login':
+        case '/signup':
+        case '/profile':
+        case '/dashboard':
+          break;
+        default:
+          return this.props.history.push('/');
+      }
+    }
   }
+
   render() {
     return (
-      <div className='auth-redirect'></div>
+      <>
+        { console.log('AUTHREDIRECT RENDER') }
+      </>
     ) 
   } 
 }

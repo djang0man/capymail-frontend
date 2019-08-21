@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import ProfileForm from '../ProfileForm';
+
 import * as profileActions from '../../action/profile.js';
 
 class Profile extends React.Component {
@@ -17,9 +19,9 @@ class Profile extends React.Component {
 
   handleCreate(profile) {
     this.props.profileCreate(profile)
-    .then(() => {
-      this.props.history.push('/dashboard');
-    });
+      .then(() => {
+        this.props.history.push('/dashboard');
+      });
   }
 
   handleUpdate(profile){
@@ -39,6 +41,7 @@ class Profile extends React.Component {
 
     return (
       <div className='profile'> 
+        { console.log('PROFILE RENDER') }
         <h2>Profile</h2>
         { profile ? 
           <div>

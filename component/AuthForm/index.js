@@ -107,6 +107,8 @@ class AuthForm extends React.Component {
         noValidate
         onSubmit={ this.handleSubmit }>
 
+        { console.log('AUTHFORM RENDER') }
+
         {usernameDirty &&
           <p className='alert'>{ usernameError }</p>
         }

@@ -11,14 +11,12 @@ import Profile from '../Profile';
 import Dashboard from '../Dashboard';
 import Conversation from '../Conversation';
 import AuthRedirect from '../AuthRedirect';
-import * as profileActions from '../../action/profile.js';
-import * as messageActions from '../../action/message.js';
-import * as conversationActions from '../../action/conversation.js';
 
 class App extends React.Component {
   render() {
     return (
       <div className='app row'>
+        { console.log('APP RENDER') }
         <BrowserRouter>
           <div className='columns'>
             <Header />
@@ -41,11 +39,5 @@ let mapStateToProps = (state) => ({
   loggedIn: !!state.token
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  fetchProfile: () => dispatch(profileActions.fetch()),
-  fetchMessages: () => dispatch(messageActions.fetch()),
-  fetchConversations: () => dispatch(conversationActions.fetch())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps)(App);
 
