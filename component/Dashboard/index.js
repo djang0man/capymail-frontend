@@ -25,8 +25,6 @@ class Dashboard extends React.Component {
     if (conversations.length === 0) {
       this.props.fetchConversations();
     }
-
-
   }
   
   render(){
