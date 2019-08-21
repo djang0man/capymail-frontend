@@ -12,11 +12,17 @@ class Landing extends React.Component {
 
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
+
+    this.state = {
+      loading: false
+    }
   }
 
   handleLogin(user) {
     this.props.login(user)
       .then(() => {
+        this.setState({ loading: true });
+
         this.props.fetchProfile()
         .then(action => {
           if (action.type === 'PROFILE_SET') {
@@ -31,6 +37,8 @@ class Landing extends React.Component {
   }
 
   handleSignup(user) {
+    this.setState({ loading: true });
+
     this.props.signup(user)
       .then(() => {
         this.props.history.push('/profile');
@@ -62,19 +70,20 @@ class Landing extends React.Component {
   }
 
   render() {
+    const { loading } = this.state;
     const { pathname } = this.props.location;
     
     return (
       <div className='landing'>
         { console.log('LANDING RENDER') }
-        {pathname === '/signup' &&
+        {pathname === '/signup' && !loading &&
           <div>
             <h3>Signup</h3>
             <AuthForm onComplete={ this.handleSignup } />
           </div>
         }
 
-        {pathname === '/login' &&
+        {pathname === '/login' && !loading &&
           <div>
             <h3>Login</h3>
             <AuthForm type='login' onComplete={ this.handleLogin } />

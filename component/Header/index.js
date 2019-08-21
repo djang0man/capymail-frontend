@@ -43,9 +43,11 @@ class Header extends React.Component {
                 <li><Link to='/signup'>Signup</Link></li>
               </ul>
             }
+
             {loggedIn && !profile && 
               <p>Please create a profile to get started:</p> 
             }
+
             {loggedIn && profile &&
               <ul> 
                 <li><Link to='/profile'>Profile</Link></li>
