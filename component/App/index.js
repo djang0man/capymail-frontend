@@ -1,16 +1,22 @@
 import './foundation.min.css';
 import './app.scss';
 
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { createContext, useContext } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
+
+import * as client from '../../network/client.js';
 
 import Header from '../Header';
 import Landing from '../Landing';
 import Profile from '../Profile';
-import Dashboard from '../Dashboard';
-import Conversation from '../Conversation';
 import AuthRedirect from '../AuthRedirect';
+
+const token = client.tokenState;
+const loggedIn = !!token;
+const profile = client.profileState || null;
+
+const AppContext = createContext();
+export const useAppContext = () => useContext(AppContext);
 
 class App extends React.Component {
   render() {
@@ -19,14 +25,22 @@ class App extends React.Component {
         { console.log('APP RENDER') }
         <BrowserRouter>
           <div className='columns'>
-            <Header />
-            <Route exact path='/' component={ Landing } />
-            <Route exact path='/login' component={ Landing } />
-            <Route exact path='/signup' component={ Landing } />
-            <Route exact path='/profile' component={ Profile } />
-            <Route exact path='/dashboard' component={ Dashboard } />
-            <Route path='/conversations/:id' component={ Conversation } />
-            <Route path='*' component={ AuthRedirect } />
+            <AppContext.Provider
+              value={{
+                token,
+                profile,
+                loggedIn,
+                messages: null,
+                conversation: null,
+                conversations: null
+              }}>
+              <Header />
+              <Route exact path='/' component={ Landing } />
+              <Route exact path='/login' component={ Landing } />
+              <Route exact path='/signup' component={ Landing } />
+              <Route exact path='/profile' component={ Profile } />
+              <Route path='*' component={ AuthRedirect } />
+            </AppContext.Provider>
           </div>
         </BrowserRouter>
       </div>
@@ -34,10 +48,5 @@ class App extends React.Component {
   }
 }
 
-let mapStateToProps = (state) => ({
-  profile: state.profile,
-  loggedIn: !!state.token
-});
-
-export default connect(mapStateToProps)(App);
+export default App;
 

@@ -1,54 +1,44 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 
-class AuthRedirect extends React.Component {
-  componentDidMount() {
-    let {
-      profile,
-      location,
-      loggedIn,
-    } = this.props;
+import { useAppContext } from '../App';
 
-    let { pathname } = location;
+function AuthRedirect(props) {
+  let {
+    profile,
+    loggedIn,
+  } = useAppContext();
 
-    if (!loggedIn) {
-      if (pathname !== '/login' && pathname !== '/signup') {
-        return this.props.history.push('/');
-      }
-    }
+  let { pathname } = props.location;
 
-    if (loggedIn && !profile) {
-      return this.props.history.push('/profile');
-    }
-
-    if (!pathname.includes('/conversations')) {
-      switch (pathname) {
-        case '/':
-        case '/login':
-        case '/signup':
-        case '/profile':
-        case '/dashboard':
-          break;
-        default:
-          return this.props.history.push('/');
-      }
+  if (!loggedIn) {
+    if (pathname !== '/login' && pathname !== '/signup') {
+      // props.history.push('/');
     }
   }
 
-  render() {
-    return (
-      <>
-        { console.log('AUTHREDIRECT RENDER') }
-      </>
-    ) 
-  } 
+  if (loggedIn && !profile) {
+    // props.history.push('/profile');
+  }
+
+  if (!pathname.includes('/conversations')) {
+    switch (pathname) {
+      case '/':
+      case '/login':
+      case '/signup':
+      case '/profile':
+      case '/dashboard':
+        break;
+      default:
+        // props.history.push('/');
+    }
+  }
+
+  return (
+    <>
+      { console.log('AUTHREDIRECT RENDER') }
+    </>
+  )
 }
 
-const mapStateToProps = state => ({
-  profile: state.profile,
-  loggedIn: !!state.token
-});
-
-export default connect(mapStateToProps)(AuthRedirect);
+export default AuthRedirect;
 

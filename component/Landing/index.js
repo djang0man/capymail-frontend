@@ -1,109 +1,81 @@
 import React from 'react';
-import { connect } from 'react-redux';
+
+import * as networkAuth from '../../network/auth.js';
+import * as networkProfile from '../../network/profile.js';
 
 import AuthForm from '../AuthForm';
 
-import * as auth from '../../action/auth.js';
-import * as profileActions from '../../action/profile.js';
+import { useAppContext } from '../App';
 
-class Landing extends React.Component {
-  constructor(props) {
-    super(props);
+function Landing(props) {
+  const handleLogin = user => {
+    networkAuth.login(user)
+      .then(token => {
+        networkProfile.fetch(token)
+          .then(profile => {
+            // this.setState({ profile });
 
-    this.handleLogin = this.handleLogin.bind(this);
-    this.handleSignup = this.handleSignup.bind(this);
-
-    this.state = {
-      loading: false
-    }
-  }
-
-  handleLogin(user) {
-    this.props.login(user)
-      .then(() => {
-        this.setState({ loading: true });
-
-        this.props.fetchProfile()
-        .then(action => {
-          if (action.type === 'PROFILE_SET') {
-            this.props.history.push('/dashboard');
-          }
-          if (action.type === 'PROFILE_SET_FAILED') {
-            this.props.history.push('/profile');
-          }
-        });
+            // props.history.push('/dashboard');
+          })
+        .catch(() => {
+          // props.history.push('/profile');
+        })
       })
     .catch(console.error);
   }
 
-  handleSignup(user) {
-    this.setState({ loading: true });
-
-    this.props.signup(user)
+  const handleSignup = user => {
+    auth.signup(user)
       .then(() => {
-        this.props.history.push('/profile');
+        // this.setState({ loading: true });
+
+        // props.history.push('/profile');
       })
     .catch(console.error);
   }
 
-  componentDidMount() {
-    let {
-      profile,
-      loggedIn
-    } = this.props;
+  let {
+    token,
+    loading,
+    profile,
+    loggedIn
+  } = useAppContext();
 
-    if (loggedIn && profile) {
-      return this.props.history.push('/dashboard');
-    }
+  const { pathname } = props.location;
 
-    if (loggedIn && !profile) {
-      this.props.fetchProfile()
-        .then(action => {
-          if (action.type === 'PROFILE_SET') {
-            return this.props.history.push('/dashboard');
-          }
-          if (action.type === 'PROFILE_SET_FAILED') {
-            return this.props.history.push('/profile');
-          }
-        });
-    }
+  if (loggedIn && profile) {
+    // props.history.push('/dashboard');
   }
 
-  render() {
-    const { loading } = this.state;
-    const { pathname } = this.props.location;
-    
-    return (
-      <div className='landing'>
-        { console.log('LANDING RENDER') }
-        {pathname === '/signup' && !loading &&
-          <div>
-            <h3>Signup</h3>
-            <AuthForm onComplete={ this.handleSignup } />
-          </div>
-        }
-
-        {pathname === '/login' && !loading &&
-          <div>
-            <h3>Login</h3>
-            <AuthForm type='login' onComplete={ this.handleLogin } />
-          </div>
-        }
-      </div>
-    )
+  if (loggedIn && !profile) {
+    networkProfile.fetch(token)
+      .then(() => {
+        // props.history.push('/dashboard');
+      })
+    .catch(() => {
+      // props.history.push('/profile');
+    })
   }
+  
+  return (
+    <div className='landing'>
+      { console.log('LANDING RENDER') }
+      {pathname === '/signup' && !loading &&
+        <div>
+          <h3>Signup</h3>
+          <AuthForm onComplete={ handleSignup } />
+        </div>
+      }
+
+      {pathname === '/login' && !loading &&
+        <div>
+          <h3>Login</h3>
+          <AuthForm type='login' onComplete={ handleLogin } />
+        </div>
+      }
+    </div>
+  )
 }
 
-const mapStateToProps = (state) => ({
-  profile: state.profile,
-  loggedIn: !!state.token
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  login: (user) => dispatch(auth.login(user)),
-  signup: (user) => dispatch(auth.signup(user)),
-  fetchProfile: () => dispatch(profileActions.fetch())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Landing);
+export default Landing;
 

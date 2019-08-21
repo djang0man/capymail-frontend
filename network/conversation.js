@@ -3,33 +3,8 @@
 import superagent from 'superagent';
 import realtime from '../lib/realtime.js';
 
-export const set = user => ({
-  type: 'CONVERSATIONS_SET',
-  payload: user
-});
-
-export const setOne = user => ({
-  type: 'CONVERSATION_SET',
-  payload: user
-});
-
-export const unset = () => ({
-  type: 'CONVERSATION_UNSET'
-});
-
-export const create = conversation => ({
-  type: 'CONVERSATION_CREATE',
-  payload: conversation
-});
-
-export const failed = () => ({
-  type: 'CONVERSATION_CREATE_FAILED'
-});
-
-export const createRequest = conversation => store => {
+export const createRequest = (token, conversation) => {
   let body;
-
-  const { token } = store.getState(); 
 
   console.log('CONVERSATION :: ', conversation);
 
@@ -39,7 +14,7 @@ export const createRequest = conversation => store => {
     .send(conversation)
       .then(res => {
         body = res.body;
-        return store.dispatch(create(body));
+        return body;
       })
         .then(() => {
           realtime.emit('CONVERSATION_CREATE', {
@@ -49,37 +24,30 @@ export const createRequest = conversation => store => {
     })
     .catch((err) => {
       console.error(err);
-      return store.dispatch(failed());
     });
 };
 
-export const fetch = () => store => {
-  const { token, profile } = store.getState();
-
+export const fetch = (token, profile) => {
   return superagent.get(`${__API_URL__}/conversations`)
     .set('Authorization', `Bearer ${token}`)
     .query(profile)
       .then(res => {
-        return store.dispatch(set(res.body));
+        return res.body;
       })
   .catch((err) => {
     console.error(err);
-    return store.dispatch(failed());
    });
 };
 
-export const fetchById = (id) => (store) => {
-  const { token } = store.getState();
-
+export const fetchById = (token, id) => {
   return superagent.get(`${__API_URL__}/conversations/${id}`)
     .set('Authorization', `Bearer ${token}`)
     .send(id)
       .then(res => {
-        return store.dispatch(setOne(res.body));
+        return res.body;
       })
   .catch((err) => {
     console.error(err);
-    return store.dispatch(failed());
    });
 };
 

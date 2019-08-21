@@ -3,28 +3,8 @@
 import superagent from 'superagent';
 import realtime from '../lib/realtime.js';
 
-export const set = conversation => ({
-  type: 'MESSAGES_SET',
-  payload: conversation,
-});
-
-export const unset = () => ({
-  type: 'MESSAGES_UNSET',
-});
-
-export const create = message => ({
-  type: 'MESSAGE_CREATE',
-  payload: message,
-});
-
-export const failed = () => ({
-  type: 'MESSAGE_CREATE_FAILED',
-});
-
-export const createRequest = message => store => {
+export const createRequest = (token, conversation, message) => {
   let body;
-
-  const { token, conversation } = store.getState(); 
 
   const request = {
     message,
@@ -37,7 +17,7 @@ export const createRequest = message => store => {
     .send(request)
       .then(res => {
         body = res.body;
-        return store.dispatch(create(body));
+        return body;
       })
         .then(() => {
           realtime.emit('MESSAGE_CREATE', {
@@ -52,37 +32,30 @@ export const createRequest = message => store => {
         })
   .catch((err) => {
     console.error(err);
-    return store.dispatch(failed());
   });
 };
 
-export const fetch = () => store => {
-  const { token, conversation } = store.getState();
-
+export const fetch = (token, conversation) => {
   return superagent.get(`${__API_URL__}/messages`)
     .set('Authorization', `Bearer ${token}`)
     .query(conversation)
       .then(res => {
-        return store.dispatch(set(res.body));
+        return res.body;
       })
   .catch((err) => {
     console.error(err);
-    return store.dispatch(failed());
    });
 };
 
-export const fetchById = id => store => {
-  const { token } = store.getState();
-
+export const fetchById = (token, id) => {
   return superagent.get(`${__API_URL__}/messages`)
     .set('Authorization', `Bearer ${token}`)
     .query({ _id: id })
       .then(res => {
-        return store.dispatch(set(res.body));
+        return res.body;
       })
   .catch((err) => {
     console.error(err);
-    return store.dispatch(failed());
    });
 };
 
