@@ -12,14 +12,21 @@ import * as conversationActions from '../../action/conversation.js';
 
 class Dashboard extends React.Component {
   componentDidMount() {
-    this.props.unsetMessages();
-    this.props.unsetConversation();
+    const { messages, conversation, conversations } = this.props;
 
-    const { conversations } = this.props;
+    if (messages.length !== 0) {
+      this.props.unsetMessages();
+    }
 
-    if (!conversations || conversations.length === 0) {
+    if (conversation.length !== 0) {
+      this.props.unsetConversation();
+    }
+
+    if (conversations.length === 0) {
       this.props.fetchConversations();
     }
+
+
   }
   
   render(){
@@ -46,6 +53,8 @@ class Dashboard extends React.Component {
 }
 
 let mapStateToProps = (state) => ({
+  messages: state.messages,
+  conversation: state.conversation,
   conversations: state.conversations
 });
 
