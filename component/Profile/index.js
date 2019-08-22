@@ -37,6 +37,7 @@ function Profile(props) {
     <>
       {activePage == '/profile' &&
         <div className='profile'>
+          { console.log('PROFILE RENDER') }
           <h2>Profile</h2>
           { profile ?
             <div>

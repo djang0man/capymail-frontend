@@ -66,6 +66,7 @@ function Landing(props) {
   
   return (
     <div className='landing'>
+      { console.log('LANDING RENDER') }
       {activePage == '/signup' &&
         <div>
           <h3>Signup</h3>

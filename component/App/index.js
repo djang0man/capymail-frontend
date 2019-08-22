@@ -44,6 +44,7 @@ function App() {
 
   return (
     <div className='app row'>
+      { console.log('APP RENDER') }
       <div className='columns'>
         <Header
           profile={ profile }
