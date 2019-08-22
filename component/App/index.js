@@ -71,7 +71,6 @@ function App() {
         <Dashboard
           token={ token }
           profile={ profile }
-          loggedIn={ loggedIn }
           conversations={ conversations }
           onSetConversations={ onSetConversations }
           activePage={ activePage }
