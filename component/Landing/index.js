@@ -65,22 +65,26 @@ function Landing(props) {
   }
   
   return (
-    <div className='landing'>
-      { console.log('LANDING RENDER') }
-      {activePage == '/signup' &&
-        <div>
-          <h3>Signup</h3>
-          <AuthForm onComplete={ handleSignup } />
-        </div>
-      }
+    <>
+      {!loggedIn &&
+        <div className='landing'>
+          { console.log('LANDING RENDER') }
+          {activePage == '/signup' &&
+            <div>
+              <h3>Signup</h3>
+              <AuthForm onComplete={ handleSignup } />
+            </div>
+          }
 
-      {activePage == '/login' &&
-        <div>
-          <h3>Login</h3>
-          <AuthForm type='login' onComplete={ handleLogin } />
+          {activePage == '/login' &&
+            <div>
+              <h3>Login</h3>
+              <AuthForm type='login' onComplete={ handleLogin } />
+            </div>
+          }
         </div>
       }
-    </div>
+    </>
   )
 }
 

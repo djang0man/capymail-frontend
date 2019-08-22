@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import validator from 'validator';
 
-let emptyState = {
+const emptyState = {
   username: '',
   usernameDirty: false,
   usernameError: 'Username is required',
@@ -14,18 +14,13 @@ let emptyState = {
   submitted: false,
 };
 
-class AuthForm extends React.Component {
-  constructor (props) {
-    super(props);
+function AuthForm(props) {
+  const { type, onComplete } = props;
 
-    this.state = emptyState;
-    this.handleChange = this.handleChange.bind(this);
-    this.validateChange = this.validateChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+  const [formState, setFormState] = useState(emptyState);
 
-  validateChange(name, value) {
-    if (this.props.type === 'login') {
+  const validateChange = (name, value) => {
+    if (type === 'login') {
       return null;
     }
 
@@ -50,32 +45,32 @@ class AuthForm extends React.Component {
     }
   }
 
-  handleChange(e) {
+  const handleChange = e => {
     let { name, value } = e.target;
 
-    this.setState({
+    setFormState({
+      ...formState,
       [name]: value,
       [`${name}Dirty`]: true,
-      [`${name}Error`]: this.validateChange(name, value),
+      [`${name}Error`]: validateChange(name, value),
     });
   }
 
-  handleSubmit(e) {
+  const handleSubmit = e => {
     e.preventDefault();
-
-    let { type } = this.props;
 
     let {
       nameError,
       emailError,
       passwordError 
-    } = this.state;
+    } = formState;
 
     if (type === 'login' || !nameError && !emailError && !passwordError) {
-      this.props.onComplete(this.state);
-      this.setState(emptyState);
+      onComplete(formState);
+      setFormState(emptyState);
     } else {
-      this.setState({
+      setFormState({
+        ...formState,
         submitted: true,
         emailDirty: true,
         usernameDirty: true,
@@ -84,75 +79,70 @@ class AuthForm extends React.Component {
     }
   }
   
-  render() {
-    let { type } = this.props;
+  const {
+    username,
+    usernameError,
+    usernameDirty,
+    email,
+    emailDirty,
+    emailError,
+    password,
+    passwordDirty,
+    passwordError
+  } = formState;
 
-    let {
-      username,
-      usernameError,
-      usernameDirty,
-      email,
-      emailDirty,
-      emailError,
-      password,
-      passwordDirty,
-      passwordError
-    } = this.state;
 
-    type = type === 'login' ? type : 'signup';
+  return (
+    <form
+      className='auth-form'
+      noValidate
+      onSubmit={ handleSubmit }>
 
-    return (
-      <form 
-        className='auth-form'
-        noValidate
-        onSubmit={ this.handleSubmit }>
+      { console.log('AUTHFORM RENDER') }
 
-        { console.log('AUTHFORM RENDER') }
+      {usernameDirty &&
+        <p className='alert'>{ usernameError }</p>
+      }
+      <input
+        className={ usernameDirty && usernameError ? 'invalid' : null }
+        type='text'
+        name='username'
+        placeholder='username'
+        value={ username }
+        onChange={ handleChange }
+      />
 
-        {usernameDirty &&
-          <p className='alert'>{ usernameError }</p>
-        }
-        <input
-          className={ usernameDirty && usernameError ? 'invalid' : null }
-          type='text'
-          name='username'
-          placeholder='username'
-          value={ username }
-          onChange={ this.handleChange }
-        />
+      {type != 'login' &&
+        <div>
+          {emailDirty &&
+            <p className='alert'>{ emailError }</p>
+          }
+          <input
+            className={ emailDirty && emailError ? 'invalid' : null }
+            type='email'
+            name='email'
+            placeholder='email'
+            value={ email }
+            onChange={ handleChange }
+          />
+        </div>
+      }
 
-        {type != 'login' &&
-          <div>
-            {emailDirty &&
-              <p className='alert'>{ emailError }</p>
-            }
-            <input
-              className={ emailDirty && emailError ? 'invalid' : null }
-              type='email'
-              name='email'
-              placeholder='email'
-              value={ email }
-              onChange={ this.handleChange }
-            />
-          </div>
-        }
+      {passwordDirty &&
+        <p className='alert'>{ passwordError }</p>
+      }
+      <input
+        className={ passwordDirty && passwordError ? 'invalid' : null }
+        name='password'
+        placeholder='password'
+        type='password'
+        value={ password }
+        onChange={ handleChange }
+      />
 
-        {passwordDirty &&
-          <p className='alert'>{ passwordError }</p>
-        }
-        <input
-          className={ passwordDirty && passwordError ? 'invalid' : null }
-          name='password'
-          placeholder='password'
-          type='password'
-          value={ password }
-          onChange={ this.handleChange }
-        />
-
-        <button className='button' type='submit'>{ type }</button>
-      </form>
-    )
-  }
+      <button className='button' type='submit'>{ type ? type : 'signup' }</button>
+    </form>
+  )
 }
 
 export default AuthForm;

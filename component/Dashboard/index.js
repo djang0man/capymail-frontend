@@ -35,7 +35,7 @@ function Dashboard(props) {
 
   return (
     <>
-      {activePage == '/dashboard' &&
+      {profile && activePage == '/dashboard' &&
         <div className='dashboard'>
           { console.log('DASHBOARD RENDER') }
           <h3>Conversations</h3>

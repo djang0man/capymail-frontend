@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import validator from 'validator';
 
-let emptyState = {
+const emptyState = {
   firstName: '',
   firstNameDirty: false,
   firstNameError: 'First name is required.',
