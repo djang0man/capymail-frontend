@@ -2,28 +2,23 @@ import './header.scss';
 
 import React from 'react';
 
-import * as networkAuth from '../../network/auth.js';
-
 import Button from '../Button';
 
 function Header(props) {
   const {
     profile,
     loggedIn,
-    onSetProfile,
     onSetLoggedIn,
     onSetActivePage
   } = props;
 
   const handleLogout = () => {
-    networkAuth.logout();
-    onSetProfile(null);
     onSetLoggedIn(!loggedIn);
-    onSetActivePage('/');
   }
 
   return (
     <header className='header'>
+      { console.log('HEADER RENDER') }
       {!loggedIn && 
         <div>
           <h1>welcome to capymail</h1>

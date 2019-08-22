@@ -4,6 +4,7 @@ import './app.scss';
 import React, { Component, useState } from 'react';
 
 import * as client from '../../network/client.js';
+import * as networkAuth from '../../network/auth.js';
 
 import Header from '../Header';
 import Landing from '../Landing';
@@ -34,6 +35,12 @@ function App() {
 
   const [loggedIn, setLoggedIn] = useState(cachedLoggedIn);
   function onSetLoggedIn(loggedIn) {
+    if (!loggedIn) {
+      setProfile(null);
+      setActivePage('/');
+      networkAuth.logout();
+    }
+
     setLoggedIn(loggedIn);
   }
 
@@ -49,7 +56,6 @@ function App() {
         <Header
           profile={ profile }
           loggedIn={ loggedIn }
-          onSetProfile={ onSetProfile }
           onSetLoggedIn={ onSetLoggedIn }
           onSetActivePage={ onSetActivePage }
         />
