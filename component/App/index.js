@@ -1,51 +1,67 @@
 import './foundation.min.css';
 import './app.scss';
 
-import React, { createContext, useContext } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import React, { Component, useState } from 'react';
 
 import * as client from '../../network/client.js';
 
 import Header from '../Header';
 import Landing from '../Landing';
 import Profile from '../Profile';
-import AuthRedirect from '../AuthRedirect';
 
-const token = client.tokenState;
-const loggedIn = !!token;
-const profile = client.profileState || null;
+const cachedToken = client.tokenState || null;
+const cachedProfile = client.profileState || null;
+const cachedLoggedIn = !!cachedToken;
 
-const AppContext = createContext();
-export const useAppContext = () => useContext(AppContext);
-
-class App extends React.Component {
-  render() {
-    return (
-      <div className='app row'>
-        { console.log('APP RENDER') }
-        <BrowserRouter>
-          <div className='columns'>
-            <AppContext.Provider
-              value={{
-                token,
-                profile,
-                loggedIn,
-                messages: null,
-                conversation: null,
-                conversations: null
-              }}>
-              <Header />
-              <Route exact path='/' component={ Landing } />
-              <Route exact path='/login' component={ Landing } />
-              <Route exact path='/signup' component={ Landing } />
-              <Route exact path='/profile' component={ Profile } />
-              <Route path='*' component={ AuthRedirect } />
-            </AppContext.Provider>
-          </div>
-        </BrowserRouter>
-      </div>
-    )
+function App() {
+  const [activePage, setActivePage] = useState('/');
+  function onSetActivePage(activePage) {
+    setActivePage(activePage);
   }
+
+  const [token, setToken] = useState(cachedToken);
+  function onSetToken(token) {
+    setToken(token);
+  }
+
+  const [profile, setProfile] = useState(cachedProfile);
+  function onSetProfile(profile) {
+    setProfile(profile);
+  }
+
+  const [loggedIn, setLoggedIn] = useState(cachedLoggedIn);
+  function onSetLoggedIn(loggedIn) {
+    setLoggedIn(loggedIn);
+  }
+
+  return (
+    <div className='app row'>
+      <div className='columns'>
+        <Header
+          profile={ profile }
+          loggedIn={ loggedIn }
+          onSetLoggedIn={ onSetLoggedIn }
+          onSetActivePage={ onSetActivePage }
+        />
+        <Landing
+          token={ token }
+          onSetToken={ onSetToken }
+          loggedIn={ loggedIn }
+          onSetLoggedIn={ onSetLoggedIn }
+          profile={ profile }
+          onSetProfile={ onSetProfile }
+          activePage={ activePage }
+          onSetActivePage={ onSetActivePage }
+        />
+        <Profile
+          token={ token }
+          profile={ profile }
+          onSetProfile={ onSetProfile }
+          activePage={ activePage }
+        />
+      </div>
+    </div>
+  )
 }
 
 export default App;

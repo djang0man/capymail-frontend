@@ -5,69 +5,75 @@ import * as networkProfile from '../../network/profile.js';
 
 import AuthForm from '../AuthForm';
 
-import { useAppContext } from '../App';
-
 function Landing(props) {
+  const {
+    token,
+    onSetToken,
+    loggedIn,
+    onSetLoggedIn,
+    profile,
+    onSetProfile,
+    activePage,
+    onSetActivePage
+  } = props;
+
   const handleLogin = user => {
     networkAuth.login(user)
       .then(token => {
+        onSetToken(token);
+        onSetLoggedIn(!!token);
         networkProfile.fetch(token)
           .then(profile => {
-            // this.setState({ profile });
-
-            // props.history.push('/dashboard');
+            onSetProfile(profile);
+            onSetActivePage('/dashboard');
           })
-        .catch(() => {
-          // props.history.push('/profile');
+        .catch(e => {
+          console.error(e);
+          onSetActivePage('/profile');
         })
       })
     .catch(console.error);
   }
 
   const handleSignup = user => {
-    auth.signup(user)
-      .then(() => {
-        // this.setState({ loading: true });
-
-        // props.history.push('/profile');
+    networkAuth.signup(user)
+      .then(token => {
+        onSetToken(token);
+        onSetLoggedIn(!!token);
+        onSetActivePage('/profile');
       })
-    .catch(console.error);
+    .catch(e => {
+      console.error(e);
+      onSetActivePage('/signup');
+    });
   }
 
-  let {
-    token,
-    loading,
-    profile,
-    loggedIn
-  } = useAppContext();
-
-  const { pathname } = props.location;
-
   if (loggedIn && profile) {
-    // props.history.push('/dashboard');
+    () => onSetActivePage('/dashboard');
   }
 
   if (loggedIn && !profile) {
     networkProfile.fetch(token)
-      .then(() => {
-        // props.history.push('/dashboard');
+      .then(profile => {
+        onSetProfile(profile);
+        onSetActivePage('/dashboard');
       })
     .catch(() => {
-      // props.history.push('/profile');
+      console.error;
+      onSetActivePage('/profile');
     })
   }
   
   return (
     <div className='landing'>
-      { console.log('LANDING RENDER') }
-      {pathname === '/signup' && !loading &&
+      {activePage == '/signup' &&
         <div>
           <h3>Signup</h3>
           <AuthForm onComplete={ handleSignup } />
         </div>
       }
 
-      {pathname === '/login' && !loading &&
+      {activePage == '/login' &&
         <div>
           <h3>Login</h3>
           <AuthForm type='login' onComplete={ handleLogin } />

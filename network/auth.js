@@ -7,6 +7,7 @@ window.util = util;
 
 export const logout = () => {
   util.cookieDelete('X-CapyMail-Token');
+  util.setLocalStorage('profile', null);
 };
 
 export const login = user => {

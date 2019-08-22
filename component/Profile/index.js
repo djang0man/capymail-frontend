@@ -2,55 +2,68 @@ import React, { useState } from 'react';
 
 import ProfileForm from '../ProfileForm';
 
-import * as profile from '../../network/profile.js';
-
-import { useAppContext } from '../App';
+import * as networkProfile from '../../network/profile.js';
 
 function Profile(props) {
+  const { token, profile, onSetProfile, activePage } = props;
+
   const [editing, setEditing] = useState(false);
 
+  const [localProfile, setLocalProfile] = useState(profile);
+  function onSetLocalProfile(localProfile) {
+    setLocalProfile(localProfile);
+  }
+
   const handleCreate = profile => {
-    profile.create(profile)
-      .then(() => {
-        props.history.push('/dashboard');
+    setEditing(false);
+    onSetLocalProfile(profile);
+
+    networkProfile.create(token, profile)
+      .then(profile => {
+        onSetProfile(profile);
       });
   }
 
   const handleUpdate = profile => {
-    profile.update(profile);
-    setEditing(true);
+    setEditing(false);
+    onSetLocalProfile(profile);
+
+    networkProfile.update(token, profile)
+      .then(profile => {
+        onSetProfile(profile);
+      });
   }
 
-  const {
-    profile, 
-  } = useAppContext();
-
   return (
-    <div className='profile'> 
-      { console.log('PROFILE RENDER') }
-      <h2>Profile</h2>
-      { profile ? 
-        <div>
-          <h3>{ profile.firstName } { profile.lastName }</h3>
-          {editing ? 
+    <>
+      {console.log('PROFILE', props)}
+      {activePage == '/profile' &&
+        <div className='profile'>
+          <h2>Profile</h2>
+          { profile ?
             <div>
-              <ProfileForm profile={ profile } onComplete={ handleUpdate } />
-              <button className='button' onClick={() => setEditing(false) }>
-                Cancel 
-              </button>
+              <h3>{ localProfile.firstName } { localProfile.lastName }</h3>
+              {editing ?
+                <div>
+                  <ProfileForm profile={ localProfile } onComplete={ handleUpdate } />
+                  <button className='button' onClick={() => setEditing(false) }>
+                    Cancel
+                  </button>
+                </div>
+              :
+                <div>
+                  <button className='button' onClick={() => setEditing(true) }>
+                    Edit Profile
+                  </button>
+                </div>
+              }
             </div>
-          : 
-            <div>
-              <button className='button' onClick={() => setEditing(true) }>
-                Edit Profile
-              </button>
-            </div>
+          :
+            <ProfileForm onComplete={ handleCreate } />
           }
         </div>
-      : 
-        <ProfileForm onComplete={ handleCreate } />
       }
-    </div>
+    </>
   )
 }
 

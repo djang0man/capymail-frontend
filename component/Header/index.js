@@ -1,22 +1,24 @@
 import './header.scss';
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import * as networkAuth from '../../network/auth.js';
 
-import { useAppContext } from '../App';
+import Button from '../Button';
 
 function Header(props) {
+  const {
+    profile,
+    loggedIn,
+    onSetLoggedIn,
+    onSetActivePage
+  } = props;
+
   const handleLogout = () => {
     networkAuth.logout();
-    // props.history.push('/');
+    onSetLoggedIn(false);
+    onSetActivePage('/');
   }
-
-  let {
-    profile,
-    loggedIn
-  } = useAppContext();
 
   return (
     <header className='header'>
@@ -28,15 +30,15 @@ function Header(props) {
       }
 
       {loggedIn &&
-        <button className='button' onClick={ handleLogout }>Sign Out</button>
+        <Button className='button' onClick={ handleLogout }>Sign Out</Button>
       }
 
       <nav> 
           {!loggedIn && 
             <ul> 
-              <li><Link to='/'>Home</Link></li>
-              <li><Link to='/login'>Login</Link></li>
-              <li><Link to='/signup'>Signup</Link></li>
+              <li><Button onClick={ () => onSetActivePage('/') }>Home</Button></li>
+              <li><Button onClick={ () => onSetActivePage('/login') }>Login</Button></li>
+              <li><Button onClick={ () => onSetActivePage('/signup') }>Signup</Button></li>
             </ul>
           }
 
@@ -46,8 +48,8 @@ function Header(props) {
 
           {loggedIn && profile &&
             <ul> 
-              <li><Link to='/profile'>Profile</Link></li>
-              <li><Link to='/dashboard'>Dashboard</Link></li>
+              <li><Button onClick={ () => onSetActivePage('/profile') }>Profile</Button></li>
+              <li><Button onClick={ () => onSetActivePage('/dashboard') }>Dashboard</Button></li>
             </ul>
           }
       </nav>
