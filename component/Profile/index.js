@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import Button from '../Button';
 import ProfileForm from '../ProfileForm';
 
 import * as networkProfile from '../../network/profile.js';
@@ -43,15 +44,15 @@ function Profile(props) {
               {editing ?
                 <div>
                   <ProfileForm profile={ profile } onComplete={ handleUpdate } />
-                  <button className='button' onClick={() => setEditing(false) }>
+                  <Button className='button' onClick={() => setEditing(false) }>
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               :
                 <div>
-                  <button className='button' onClick={() => setEditing(true) }>
+                  <Button className='button' onClick={() => setEditing(true) }>
                     Edit Profile
-                  </button>
+                  </Button>
                 </div>
               }
             </div>

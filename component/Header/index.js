@@ -18,7 +18,7 @@ function Header(props) {
   const handleLogout = () => {
     networkAuth.logout();
     onSetProfile(null);
-    onSetLoggedIn(false);
+    onSetLoggedIn(!loggedIn);
     onSetActivePage('/');
   }
 

@@ -8,13 +8,16 @@ import * as client from '../../network/client.js';
 import Header from '../Header';
 import Landing from '../Landing';
 import Profile from '../Profile';
+import Dashboard from '../Dashboard';
 
 const cachedToken = client.tokenState || null;
 const cachedProfile = client.profileState || null;
 const cachedLoggedIn = !!cachedToken;
 
+const defaultActivePage = cachedLoggedIn ? '/dashboard' : '/';
+
 function App() {
-  const [activePage, setActivePage] = useState('/');
+  const [activePage, setActivePage] = useState(defaultActivePage);
   function onSetActivePage(activePage) {
     setActivePage(activePage);
   }
@@ -32,6 +35,11 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(cachedLoggedIn);
   function onSetLoggedIn(loggedIn) {
     setLoggedIn(loggedIn);
+  }
+
+  const [conversations, setConversations] = useState([]);
+  function onSetConversations(conversations) {
+    setConversations(conversations);
   }
 
   return (
@@ -58,6 +66,14 @@ function App() {
           token={ token }
           profile={ profile }
           onSetProfile={ onSetProfile }
+          activePage={ activePage }
+        />
+        <Dashboard
+          token={ token }
+          profile={ profile }
+          loggedIn={ loggedIn }
+          conversations={ conversations }
+          onSetConversations={ onSetConversations }
           activePage={ activePage }
         />
       </div>

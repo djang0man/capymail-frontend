@@ -1,6 +1,5 @@
 import React from 'react';
 import validator from 'validator';
-import { connect } from 'react-redux';
 
 let emptyState = {
   title: '',
@@ -96,9 +95,5 @@ class ConversationForm extends React.Component {
   }
 }
 
-let mapStateToProps = (state) => ({
-  profile: state.profile
-});
-
-export default connect(mapStateToProps)(ConversationForm);
+export default ConversationForm;
 
