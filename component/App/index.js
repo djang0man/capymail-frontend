@@ -40,6 +40,7 @@ function App() {
         <Header
           profile={ profile }
           loggedIn={ loggedIn }
+          onSetProfile={ onSetProfile }
           onSetLoggedIn={ onSetLoggedIn }
           onSetActivePage={ onSetActivePage }
         />

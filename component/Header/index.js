@@ -10,12 +10,14 @@ function Header(props) {
   const {
     profile,
     loggedIn,
+    onSetProfile,
     onSetLoggedIn,
     onSetActivePage
   } = props;
 
   const handleLogout = () => {
     networkAuth.logout();
+    onSetProfile(null);
     onSetLoggedIn(false);
     onSetActivePage('/');
   }
