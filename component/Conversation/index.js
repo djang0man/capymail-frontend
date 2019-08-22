@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import MessageList from '../MessageList';
 
-import * as networkMessage from '../../network/message.js';
+import * as networkMessage from '../../lib/network/message.js';
 
 function Conversation(props) {
   const {

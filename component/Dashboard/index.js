@@ -8,7 +8,7 @@ import MessageList from '../MessageList';
 import Conversation from '../Conversation';
 import ConversationForm from '../ConversationForm';
 
-import * as networkConversation from '../../network/conversation.js';
+import * as networkConversation from '../../lib/network/conversation.js';
 
 function Dashboard(props) {
   const {

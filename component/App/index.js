@@ -3,16 +3,16 @@ import './app.scss';
 
 import React, { Component, useState } from 'react';
 
-import * as client from '../../network/client.js';
-import * as networkAuth from '../../network/auth.js';
+import * as rehydrate from '../../lib/rehydrate.js';
+import * as networkAuth from '../../lib/network/auth.js';
 
 import Header from '../Header';
 import Landing from '../Landing';
 import Profile from '../Profile';
 import Dashboard from '../Dashboard';
 
-const cachedToken = client.tokenState || null;
-const cachedProfile = client.profileState || null;
+const cachedToken = rehydrate.tokenState || null;
+const cachedProfile = rehydrate.profileState || null;
 const cachedLoggedIn = !!cachedToken;
 
 const defaultActivePage = cachedLoggedIn ? '/dashboard' : '/';
