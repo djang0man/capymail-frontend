@@ -1,12 +1,13 @@
 import './dashboard.scss';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import moment from 'moment';
 
 import Button from '../Button';
+import MessageList from '../MessageList';
+import Conversation from '../Conversation';
 import ConversationForm from '../ConversationForm';
 
-import * as networkMessage from '../../network/message.js';
 import * as networkConversation from '../../network/conversation.js';
 
 function Dashboard(props) {
@@ -18,20 +19,26 @@ function Dashboard(props) {
     activePage
   } = props;
 
+  if (!token || !profile) {
+    return null;
+  }
+
   const didMountRef = useRef(false);
 
   useEffect(() => {
-    if (token && profile) {
-      if (!didMountRef.current) {
-        networkConversation.fetch(token, profile)
-          .then(conversations => {
-            console.log('CONVERSATIONS: ', conversations)
-            onSetConversations(conversations)
-          });
-        didMountRef.current = true;
-      }
+    if (!didMountRef.current) {
+      networkConversation.fetch(token, profile)
+        .then(conversations => {
+          onSetConversations(conversations)
+        });
+      didMountRef.current = true;
     }
   }, [onSetConversations]);
+
+  const [conversation, setConversation] = useState(null);
+  function onSetConversation(conversation) {
+    setConversation(conversation);
+  }
 
   return (
     <>
@@ -42,12 +49,13 @@ function Dashboard(props) {
           <ol className='conversations'>
             {conversations.map((conversation, key) =>
               <li key={ key }>
-                <Button to={ `conversations/${conversation._id}` }>{ conversation.title }</Button>
+                <Button onClick={ () => onSetConversation(conversation) }>{ conversation.title }</Button>
               </li>
             )}
           </ol>
+          <Conversation token={ token } conversation={ conversation } />
           {
-            //<ConversationForm onComplete={ conversationCreate } />
+            // <ConversationForm onComplete={ conversationCreate } />
           }
         </div>
       }
