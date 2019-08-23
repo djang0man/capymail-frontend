@@ -3,12 +3,14 @@ import './conversation.scss';
 import React, { useEffect, useState } from 'react';
 
 import MessageList from '../MessageList';
+import MessageForm from '../MessageForm';
 
 import * as networkMessage from '../../lib/network/message.js';
 
 function Conversation(props) {
   const {
     token,
+    profile,
     conversation
   } = props;
 
@@ -25,6 +27,14 @@ function Conversation(props) {
       });
   }, [conversation]);
 
+  const handleMessageCreate = message => {
+    networkMessage.create(token, conversation, message)
+      .then(() => {
+        setMessages([...messages, message]);
+      })
+    .catch(console.error);
+  }
+
   const { title } = conversation;
 
   return (
@@ -40,9 +50,7 @@ function Conversation(props) {
         </>
       }
 
-      {
-        // <MessageForm onComplete={ this.props.messageCreate } />
-      }
+      <MessageForm profile={ profile } onComplete={ handleMessageCreate } />
     </div>
   )
 }

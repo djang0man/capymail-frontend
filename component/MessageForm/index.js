@@ -2,7 +2,6 @@ import './RichEditor.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { connect } from 'react-redux';
 import validator from 'validator';
 import draftToHtml from 'draftjs-to-html';
 import { Editor, EditorState, RichUtils, convertToRaw, ContentState } from 'draft-js';
@@ -313,10 +312,5 @@ const InlineStyleControls = (props) => {
   );
 };
 
-let mapStateToProps = (state) => ({
-  profile: state.profile,
-  conversation: state.conversation
-});
-
-export default connect(mapStateToProps)(MessageForm);
+export default MessageForm;
 
