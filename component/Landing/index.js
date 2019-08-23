@@ -1,7 +1,7 @@
 import React from 'react';
 
-import * as networkAuth from '../../network/auth.js';
-import * as networkProfile from '../../network/profile.js';
+import * as networkAuth from '../../lib/network/auth.js';
+import * as networkProfile from '../../lib/network/profile.js';
 
 import AuthForm from '../AuthForm';
 

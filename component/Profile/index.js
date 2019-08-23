@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Button from '../Button';
 import ProfileForm from '../ProfileForm';
 
-import * as networkProfile from '../../network/profile.js';
+import * as networkProfile from '../../lib/network/profile.js';
 
 function Profile(props) {
   const {
