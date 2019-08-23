@@ -4,7 +4,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import moment from 'moment';
 
 import Button from '../Button';
-import MessageList from '../MessageList';
 import Conversation from '../Conversation';
 import ConversationForm from '../ConversationForm';
 
@@ -35,6 +34,16 @@ function Dashboard(props) {
     }
   }, [onSetConversations]);
 
+  const handleConversationCreate = conversation => {
+    const payload = { ...conversation, profile };
+
+    networkConversation.create(token, payload)
+      .then(() => {
+        onSetConversations([...conversations, conversation]);
+      })
+    .catch(console.error);
+  }
+
   const [conversation, setConversation] = useState(null);
   function onSetConversation(conversation) {
     setConversation(conversation);
@@ -54,9 +63,7 @@ function Dashboard(props) {
             )}
           </ol>
           <Conversation token={ token } conversation={ conversation } />
-          {
-            // <ConversationForm onComplete={ conversationCreate } />
-          }
+          <ConversationForm profile={ profile } onComplete={ handleConversationCreate } />
         </div>
       }
     </>
