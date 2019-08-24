@@ -1,12 +1,13 @@
 import './RichEditor.css';
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import validator from 'validator';
 import draftToHtml from 'draftjs-to-html';
 import { Editor, EditorState, RichUtils, convertToRaw, ContentState } from 'draft-js';
 
-let emptyState = {
+const emptyState = {
+  editorState: EditorState.createEmpty(),
   recipientEmail: '',
   recipientEmailDirty: false,
   recipientEmailError: 'Email is required',
@@ -19,35 +20,15 @@ let emptyState = {
   submitted: false
 };
 
-class MessageForm extends React.Component {
-  constructor(props){
-    super(props);
+function MessageForm(props) {
+  const {
+    profile,
+    onComplete
+  } = props;
 
-    this.state = {
-      // jshint ignore:start
-      ...emptyState,
-      // jshint ignore:end
-      editorState: EditorState.createEmpty(),
-      senderEmail: this.props.profile.email,
-      senderFirstName: this.props.profile.firstName,
-      senderLastName: this.props.profile.lastName,
-    };
-    
-    // jshint ignore:start
-    this.emptyState = {...this.state};
-    // jshint ignore:end
-    this.onChange = this.onChange.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.validateChange = this.validateChange.bind(this);
-    
-    this.focus = () => this.editor.focus();
-    this.toggleBlockType = this._toggleBlockType.bind(this);
-    this.handleKeyCommand = this._handleKeyCommand.bind(this);
-    this.toggleInlineStyle = this._toggleInlineStyle.bind(this);
-  }
+  const [formState, setFormState] = useState(emptyState);
 
-  validateChange(name, value) {
+  const validateChange = (name, value) => {
     switch (name) {
       case 'recipientEmail':
         if (!validator.isEmail(value)) {
@@ -58,155 +39,154 @@ class MessageForm extends React.Component {
         return null;
     }
   }
-  
-  handleChange(e) {
+
+  const handleChange = e => {
     let { name, value } = e.target;
 
-    this.setState({
+    setFormState({
       [name]: value,
       [`${name}Dirty`]: true,
       [`${name}Error`]: this.validateChange(name, value),
     });
   }
 
-  onChange(editorState) {
-    this.setState({
+  const onChange = editorState => {
+    setFormState({
       editorState,
       content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
       hasContent: editorState.getCurrentContent().hasText(),
     });
   }
 
-  handleSubmit(e) {
+  const handleSubmit = e => {
     e.preventDefault();
-
-    console.log(this.state);
 
     let { recipientEmailError, hasContent } = this.state;
 
     if (!recipientEmailError && hasContent) {
-      this.props.onComplete(this.state);
-      this.setState(this.emptyState);
+      onComplete(formState);
+      setFormState(emptyState);
     } else {
-      this.setState({
+      setFormState({
+        ...formState,
         submitted: true,
         subjectDirty: true,
         contentDirty: true,
-        recipientEmailDirty: true,
+        recipientEmailDirty: true
       });
     }
   }
   
-  _handleKeyCommand(command, editorState) {
+  const handleKeyCommand = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
 
     if (newState) {
-      this.onChange(newState);
+      onChange(newState);
       return true;
     }
 
     return false;
   }
   
-  _toggleBlockType(blockType) {
-    this.onChange(
+  const toggleBlockType = blockType => {
+    onChange(
       RichUtils.toggleBlockType(
-        this.state.editorState,
+        editorState,
         blockType
       )
     );
   }
   
-  _toggleInlineStyle(inlineStyle) {
-    this.onChange(
+  const toggleInlineStyle = inlineStyle => {
+    onChange(
       RichUtils.toggleInlineStyle(
-        this.state.editorState,
+        editorState,
         inlineStyle
       )
     );
   }
 
-  render() {
-    const {
-      editorState,
-      recipientEmail,
-      recipientEmailDirty,
-      recipientEmailError,
-      subject,
-      hasContent,
-      contentDirty,
-      contentError
-    } = this.state;
+  const {
+    editorState,
+    recipientEmail,
+    recipientEmailDirty,
+    recipientEmailError,
+    subject,
+    hasContent,
+    contentDirty,
+    contentError
+  } = formState;
 
-    let className = 'RichEditor-editor';
+  const editor = useRef(null);
 
-    var contentState = editorState.getCurrentContent();
+  let className = 'RichEditor-editor';
 
-    if (!contentState.hasText()) {
-      if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-        className += ' RichEditor-hidePlaceholder';
-      }
+  var contentState = editorState.getCurrentContent();
+
+  if (!contentState.hasText()) {
+    if (contentState.getBlockMap().first().getType() !== 'unstyled') {
+      className += ' RichEditor-hidePlaceholder';
     }
-
-    return (
-      <form 
-        onSubmit={ this.handleSubmit }
-        className='message-form'>
-        
-        <div>
-          {recipientEmailDirty && 
-            <p className='alert'>{ recipientEmailError }</p>
-          }
-          <input
-            className={ recipientEmailDirty && recipientEmailError ? 'invalid' : null }
-            type='email'
-            name='recipientEmail'
-            placeholder='recipient email'
-            value={ recipientEmail }
-            onChange={ this.handleChange }
-          />
-        </div>
-
-        <div>
-          <input
-            type='text'
-            name='subject'
-            placeholder='message subject'
-            value={ subject }
-            onChange={ this.handleChange }
-          />
-        </div>
-        
-        {contentDirty && !hasContent &&
-          <p className='alert'>{ contentError }</p>
-        } 
-        
-        <div className="RichEditor-root">
-          <BlockStyleControls
-            editorState={ editorState }
-            onToggle={ this.toggleBlockType }
-          />
-          <InlineStyleControls
-            editorState={ editorState }
-            onToggle={ this.toggleInlineStyle }
-          />
-          <div className={ className } onClick={ this.focus }>
-            <Editor
-              blockStyleFn={ getBlockStyle }
-              customStyleMap={ styleMap }
-              editorState={ editorState }
-              handleKeyCommand={ this.handleKeyCommand }
-              onChange={ this.onChange }
-              ref={ ref => this.editor = ref }
-              spellCheck={ true }
-            />
-          </div>
-        </div>
-
-        <button className='button' type='submit'>Send Message</button>
-      </form>
-    )
   }
+
+  return (
+    <form 
+      onSubmit={ handleSubmit }
+      className='message-form'>
+      
+      <div>
+        {recipientEmailDirty && 
+          <p className='alert'>{ recipientEmailError }</p>
+        }
+        <input
+          className={ recipientEmailDirty && recipientEmailError ? 'invalid' : null }
+          type='email'
+          name='recipientEmail'
+          placeholder='recipient email'
+          value={ recipientEmail }
+          onChange={ handleChange }
+        />
+      </div>
+
+      <div>
+        <input
+          type='text'
+          name='subject'
+          placeholder='message subject'
+          value={ subject }
+          onChange={ handleChange }
+        />
+      </div>
+      
+      {contentDirty && !hasContent &&
+        <p className='alert'>{ contentError }</p>
+      } 
+      
+      <div className="RichEditor-root">
+        <BlockStyleControls
+          editorState={ editorState }
+          onToggle={ toggleBlockType }
+        />
+        <InlineStyleControls
+          editorState={ editorState }
+          onToggle={ toggleInlineStyle }
+        />
+        <div className={ className } onClick={ focus }>
+          <Editor
+            blockStyleFn={ getBlockStyle }
+            customStyleMap={ styleMap }
+            editorState={ editorState }
+            handleKeyCommand={ handleKeyCommand }
+            onChange={ onChange }
+            ref={ ref => this.editor = ref }
+            spellCheck={ true }
+          />
+        </div>
+      </div>
+
+      <button className='button' type='submit'>Send Message</button>
+    </form>
+  )
 }
 
 const styleMap = {
