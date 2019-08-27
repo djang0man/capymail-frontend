@@ -14,6 +14,8 @@ let plugins = [
   new HTMLPlugin({template: `${__dirname}/index.html`,}),
   new DefinePlugin({
     __API_URL__: JSON.stringify(process.env.API_URL),
+    __PUSHER_KEY__: JSON.stringify(process.env.PUSHER_KEY),
+    __PUSHER_CLUSTER__: JSON.stringify(process.env.PUSHER_CLUSTER)
   }),
   new EnvironmentPlugin({
     NODE_ENV: process.env.NODE_ENV,

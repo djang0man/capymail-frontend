@@ -1,82 +1,70 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useState } from 'react';
 
+import Button from '../Button';
 import ProfileForm from '../ProfileForm';
 
-import * as profileActions from '../../action/profile.js';
+import * as networkProfile from '../../lib/network/profile.js';
 
-class Profile extends React.Component {
-  constructor(props) {
-    super(props);
+function Profile(props) {
+  const {
+    token,
+    profile,
+    onSetProfile,
+    activePage
+  } = props;
 
-    this.state = {
-      editing: false,
-    };
+  const [editing, setEditing] = useState(false);
 
-    this.handleCreate = this.handleCreate.bind(this);
-    this.handleUpdate = this.handleUpdate.bind(this);
-  }
+  const handleCreate = profile => {
+    setEditing(false);
 
-  handleCreate(profile) {
-    this.props.profileCreate(profile)
-      .then(() => {
-        this.props.history.push('/dashboard');
+    networkProfile.create(token, profile)
+      .then(profile => {
+        onSetProfile(profile);
       });
   }
 
-  handleUpdate(profile){
-    this.props.profileUpdate(profile);
-    this.setState({ editing: false });
+  const handleUpdate = profile => {
+    setEditing(false);
+
+    networkProfile.update(token, profile)
+      .then(profile => {
+        onSetProfile(profile);
+      });
   }
 
-  render(){
-    let {
-      profile, 
-      profileCreate,
-    } = this.props;
-
-    let {
-      editing
-    } = this.state;
-
-    return (
-      <div className='profile'> 
-        { console.log('PROFILE RENDER') }
-        <h2>Profile</h2>
-        { profile ? 
-          <div>
-            <h3>{ profile.firstName } { profile.lastName }</h3>
-            {editing ? 
-              <div>
-                <ProfileForm profile={ profile } onComplete={ this.handleUpdate } />
-                <button className='button' onClick={() => this.setState({ editing: false })}>
-                  Cancel 
-                </button>
-              </div>
-            : 
-              <div>
-                <button className='button' onClick={() => this.setState({ editing: true })}>
-                  Edit Profile
-                </button>
-              </div>
-            }
-          </div>
-        : 
-          <ProfileForm onComplete={ this.handleCreate } />
-        }
-      </div>
-    )
-  }
+  return (
+    <>
+      {activePage == '/profile' &&
+        <div className='profile'>
+          { console.log('PROFILE RENDER') }
+          <h2>Profile</h2>
+          { profile ?
+            <div>
+              <h3>{ profile.firstName } { profile.lastName }</h3>
+              {editing ?
+                <div>
+                  <ProfileForm profile={ profile } onComplete={ handleUpdate } />
+                  <Button className='button' onClick={() => setEditing(false) }>
+                    Cancel
+                  </Button>
+                </div>
+              :
+                <div>
+                  <Button className='button' onClick={() => setEditing(true) }>
+                    Edit Profile
+                  </Button>
+                </div>
+              }
+            </div>
+          :
+            <ProfileForm onComplete={ handleCreate } />
+          }
+        </div>
+      }
+    </>
+  )
 }
 
-const mapStateToProps = (state) => ({
-  profile: state.profile
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  profileCreate: (profile) => dispatch(profileActions.create(profile)),
-  profileUpdate: (profile) => dispatch(profileActions.update(profile))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default Profile;
 

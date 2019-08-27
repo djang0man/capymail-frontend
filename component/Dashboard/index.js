@@ -1,67 +1,90 @@
 import './dashboard.scss';
 
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import moment from 'moment';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
+import Pusher from 'pusher-js';
+
+import Button from '../Button';
+import Conversation from '../Conversation';
 import ConversationForm from '../ConversationForm';
 
-import * as messageActions from '../../action/message.js';
-import * as conversationActions from '../../action/conversation.js';
+import * as networkConversation from '../../lib/network/conversation.js';
 
-class Dashboard extends React.Component {
-  componentDidMount() {
-    const { messages, conversation, conversations } = this.props;
+function Dashboard(props) {
+  const {
+    token,
+    profile,
+    conversations,
+    onSetConversations,
+    activePage
+  } = props;
 
-    if (messages.length !== 0) {
-      this.props.unsetMessages();
-    }
-
-    if (conversation.length !== 0) {
-      this.props.unsetConversation();
-    }
-
-    if (conversations.length === 0) {
-      this.props.fetchConversations();
-    }
+  if (!token || !profile) {
+    return null;
   }
-  
-  render(){
-    let {
-      conversations,
-      conversationCreate
-    } = this.props;
 
-    return (
-      <div className='dashboard'>
-        { console.log('DASHBOARD RENDER') }
-        <h3>Conversations</h3>
-        <ol className='conversations'> 
-          {conversations.map((conversation, key) => 
-            <li key={ key }>
-              <Link to={ `conversations/${conversation._id}` }>{ conversation.title }</Link>
-            </li>
-          )}
-        </ol>
-        <ConversationForm onComplete={ conversationCreate } />
-      </div>
-    )
+  const didMountRef = useRef(false);
+
+  useEffect(() => {
+    if (!didMountRef.current) {
+      networkConversation.fetch(token, profile)
+        .then(conversations => {
+          onSetConversations(conversations)
+        });
+      didMountRef.current = true;
+    }
+  }, [onSetConversations]);
+
+  const handleConversationCreate = conversation => {
+    const payload = { ...conversation, profile };
+
+    networkConversation.create(token, payload)
+      .then(conversation => {
+        onSetConversations([...conversations, conversation]);
+      })
+    .catch(console.error);
   }
+
+  const [conversation, setConversation] = useState(null);
+  function onSetConversation(conversation) {
+    setConversation(conversation);
+  }
+
+  const pusher = new Pusher(__PUSHER_KEY__, {
+    cluster: __PUSHER_CLUSTER__,
+    forceTLS: true
+  });
+
+  const channel = pusher.subscribe('my-channel');
+
+  channel.bind('my-event', function(data) {
+    console.log(JSON.stringify(data));
+  });
+
+  return (
+    <>
+      {profile && activePage == '/dashboard' &&
+        <div className='dashboard'>
+          { console.log('DASHBOARD RENDER') }
+          <h3>Conversations</h3>
+          <ol className='conversations'>
+            {conversations.map((conversation, key) =>
+              <li key={ key }>
+                <Button onClick={ () => onSetConversation(conversation) }>{ conversation.title }</Button>
+              </li>
+            )}
+          </ol>
+          <Conversation token={ token } profile={ profile } conversation={ conversation } />
+
+          {conversation === null &&
+            <ConversationForm profile={ profile } onComplete={ handleConversationCreate } />
+          }
+        </div>
+      }
+    </>
+  )
 }
 
-let mapStateToProps = (state) => ({
-  messages: state.messages,
-  conversation: state.conversation,
-  conversations: state.conversations
-});
-
-let mapDispatchToProps = (dispatch) => ({
-  unsetMessages: () => dispatch(messageActions.unset()),
-  fetchConversations: () => dispatch(conversationActions.fetch()),
-  unsetConversation: () => dispatch(conversationActions.unset()),
-  conversationCreate: (conversation) => dispatch(conversationActions.createRequest(conversation))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default Dashboard;
 

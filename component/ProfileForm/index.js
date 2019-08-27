@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import validator from 'validator';
 
-let emptyState = {
+const emptyState = {
   firstName: '',
   firstNameDirty: false,
   firstNameError: 'First name is required.',
@@ -10,21 +10,13 @@ let emptyState = {
   lastNameError: 'Last name is required.',
 };
 
-class ProfileForm extends React.Component {
-  constructor(props) {
-    super(props);
+function ProfileForm(props) {
+  const { profile, onComplete } = props;
 
-    this.state = props.profile ? { ...emptyState, ...props.profile } : emptyState;
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  validateChange(name, value) {
-    if (this.props.type === 'login') {
-      return null;
-    }
-
+  const [localProfile, setLocalProfile]
+    = useState(profile ? { ...emptyState, ...profile } : emptyState);
+  
+  const validateChange = (name, value) => {
     switch (name) {
       case 'firstName':
         if (value.length < 1) {
@@ -47,79 +39,79 @@ class ProfileForm extends React.Component {
     }
   }
 
-  handleChange(e) {
+  const handleChange = e => {
     let { name, value } = e.target;
 
-    this.setState({
+    setLocalProfile({
+      ...localProfile,
       [name]: value,
       [`${name}Dirty`]: true,
-      [`${name}Error`]: this.validateChange(name, value),
+      [`${name}Error`]: validateChange(name, value),
     });
   }  
 
-  handleSubmit(e) {
+  const handleSubmit = e => {
     e.preventDefault();
 
-    this.props.onComplete(this.state);
-    this.setState(emptyState);
+    onComplete(localProfile);
+    setLocalProfile(emptyState);
   }
 
-  render() {
-    let { profile } = this.props;
+  const {
+    email,
+    firstName,
+    firstNameDirty,
+    firstNameError,
+    lastName,
+    lastNameDirty,
+    lastNameError
+  } = localProfile;
 
-    let {
-      email,
-      firstName,
-      firstNameDirty,
-      firstNameError,
-      lastName,
-      lastNameDirty,
-      lastNameError,
-    } = this.state;
+  return (
+    <form
+      className='profile-form'
+      onSubmit={ handleSubmit }>
 
-    return (
-      <form
-        className='profile-form'
-        onSubmit={ this.handleSubmit }>
-        
-        {email &&
-          <input
-            type='text'
-            name='email'
-            readOnly='readOnly'
-            value={ email }
-          />
-        }
+      { console.log('PROFILEFORM RENDER') }
 
-        {firstNameDirty &&
-          <p className='alert'>{ firstNameError }</p>
-        }
+      {email &&
         <input
-          className={ firstNameDirty && firstNameError ? 'invalid' : null }
           type='text'
-          name='firstName'
-          placeholder='First Name'
-          value={ firstName }
-          onChange={ this.handleChange }
+          name='email'
+          readOnly='readOnly'
+          value={ email }
         />
-        
-        {lastNameDirty &&
-          <p className='alert'>{ lastNameError }</p>
-        }
+      }
 
-        <input
-          className={ lastNameDirty && lastNameError ? 'invalid' : null }
-          type='text'
-          name='lastName'
-          placeholder='Last Name'
-          value={ lastName }
-          onChange={ this.handleChange }
-        />
-        
-        <button className='button' type='submit'>{ profile ? 'update' : 'create' } Profile</button>
-      </form>
-    )
-  }
+      {firstNameDirty &&
+        <p className='alert'>{ firstNameError }</p>
+      }
+
+      <input
+        className={ firstNameDirty && firstNameError ? 'invalid' : null }
+        type='text'
+        name='firstName'
+        placeholder='First Name'
+        value={ firstName }
+        onChange={ handleChange }
+      />
+
+      {lastNameDirty &&
+        <p className='alert'>{ lastNameError }</p>
+      }
+
+      <input
+        className={ lastNameDirty && lastNameError ? 'invalid' : null }
+        type='text'
+        name='lastName'
+        placeholder='Last Name'
+        value={ lastName }
+        onChange={ handleChange }
+      />
+
+      <button className='button' type='submit'>{ localProfile ? 'update' : 'create' } Profile</button>
+    </form>
+  )
 }
 
 export default ProfileForm;

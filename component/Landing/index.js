@@ -1,109 +1,92 @@
 import React from 'react';
-import { connect } from 'react-redux';
+
+import * as networkAuth from '../../lib/network/auth.js';
+import * as networkProfile from '../../lib/network/profile.js';
 
 import AuthForm from '../AuthForm';
 
-import * as auth from '../../action/auth.js';
-import * as profileActions from '../../action/profile.js';
+function Landing(props) {
+  const {
+    token,
+    onSetToken,
+    loggedIn,
+    onSetLoggedIn,
+    profile,
+    onSetProfile,
+    activePage,
+    onSetActivePage
+  } = props;
 
-class Landing extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleLogin = this.handleLogin.bind(this);
-    this.handleSignup = this.handleSignup.bind(this);
-
-    this.state = {
-      loading: false
-    }
-  }
-
-  handleLogin(user) {
-    this.props.login(user)
-      .then(() => {
-        this.setState({ loading: true });
-
-        this.props.fetchProfile()
-        .then(action => {
-          if (action.type === 'PROFILE_SET') {
-            this.props.history.push('/dashboard');
-          }
-          if (action.type === 'PROFILE_SET_FAILED') {
-            this.props.history.push('/profile');
-          }
-        });
+  const handleLogin = user => {
+    networkAuth.login(user)
+      .then(token => {
+        onSetToken(token);
+        onSetLoggedIn(!!token);
+        networkProfile.fetch(token)
+          .then(profile => {
+            onSetProfile(profile);
+            onSetActivePage('/dashboard');
+          })
+        .catch(e => {
+          console.error(e);
+          onSetActivePage('/profile');
+        })
       })
     .catch(console.error);
   }
 
-  handleSignup(user) {
-    this.setState({ loading: true });
-
-    this.props.signup(user)
-      .then(() => {
-        this.props.history.push('/profile');
+  const handleSignup = user => {
+    networkAuth.signup(user)
+      .then(token => {
+        onSetToken(token);
+        onSetLoggedIn(!!token);
+        onSetActivePage('/profile');
       })
-    .catch(console.error);
+    .catch(e => {
+      console.error(e);
+      onSetActivePage('/signup');
+    });
   }
 
-  componentDidMount() {
-    let {
-      profile,
-      loggedIn
-    } = this.props;
+  if (loggedIn && profile) {
+    () => onSetActivePage('/dashboard');
+  }
 
-    if (loggedIn && profile) {
-      return this.props.history.push('/dashboard');
-    }
-
-    if (loggedIn && !profile) {
-      this.props.fetchProfile()
-        .then(action => {
-          if (action.type === 'PROFILE_SET') {
-            return this.props.history.push('/dashboard');
+  if (loggedIn && !profile) {
+    networkProfile.fetch(token)
+      .then(profile => {
+        onSetProfile(profile);
+        onSetActivePage('/dashboard');
+      })
+    .catch(() => {
+      console.error;
+      onSetActivePage('/profile');
+    })
+  }
+  
+  return (
+    <>
+      {!loggedIn &&
+        <div className='landing'>
+          { console.log('LANDING RENDER') }
+          {activePage == '/signup' &&
+            <div>
+              <h3>Signup</h3>
+              <AuthForm onComplete={ handleSignup } />
+            </div>
           }
-          if (action.type === 'PROFILE_SET_FAILED') {
-            return this.props.history.push('/profile');
+
+          {activePage == '/login' &&
+            <div>
+              <h3>Login</h3>
+              <AuthForm type='login' onComplete={ handleLogin } />
+            </div>
           }
-        });
-    }
-  }
-
-  render() {
-    const { loading } = this.state;
-    const { pathname } = this.props.location;
-    
-    return (
-      <div className='landing'>
-        { console.log('LANDING RENDER') }
-        {pathname === '/signup' && !loading &&
-          <div>
-            <h3>Signup</h3>
-            <AuthForm onComplete={ this.handleSignup } />
-          </div>
-        }
-
-        {pathname === '/login' && !loading &&
-          <div>
-            <h3>Login</h3>
-            <AuthForm type='login' onComplete={ this.handleLogin } />
-          </div>
-        }
-      </div>
-    )
-  }
+        </div>
+      }
+    </>
+  )
 }
 
-const mapStateToProps = (state) => ({
-  profile: state.profile,
-  loggedIn: !!state.token
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  login: (user) => dispatch(auth.login(user)),
-  signup: (user) => dispatch(auth.signup(user)),
-  fetchProfile: () => dispatch(profileActions.fetch())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Landing);
+export default Landing;
 
