@@ -7,9 +7,15 @@ import Button from '../Button';
 import Conversation from '../Conversation';
 import ConversationForm from '../ConversationForm';
 
+import realtime from '../../lib/realtime';
+
 import * as networkConversation from '../../lib/network/conversation.js';
 
 function Dashboard(props) {
+  realtime.on('MESSAGE_CREATED', (msg) => {
+    console.log('MESSAGE_CREATED: ', msg);
+  });
+
   const {
     token,
     profile,
