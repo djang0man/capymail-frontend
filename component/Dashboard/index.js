@@ -3,8 +3,6 @@ import './dashboard.scss';
 import React, { useRef, useEffect, useState } from 'react';
 import moment from 'moment';
 
-import Pusher from 'pusher-js';
-
 import Button from '../Button';
 import Conversation from '../Conversation';
 import ConversationForm from '../ConversationForm';
@@ -50,17 +48,6 @@ function Dashboard(props) {
   function onSetConversation(conversation) {
     setConversation(conversation);
   }
-
-  const pusher = new Pusher(__PUSHER_KEY__, {
-    cluster: __PUSHER_CLUSTER__,
-    forceTLS: true
-  });
-
-  const channel = pusher.subscribe('my-channel');
-
-  channel.bind('my-event', function(data) {
-    console.log(JSON.stringify(data));
-  });
 
   return (
     <>

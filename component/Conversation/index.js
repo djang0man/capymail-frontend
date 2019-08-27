@@ -2,6 +2,8 @@ import './conversation.scss';
 
 import React, { useEffect, useState } from 'react';
 
+import Pusher from 'pusher-js';
+
 import MessageList from '../MessageList';
 import MessageForm from '../MessageForm';
 
@@ -36,6 +38,17 @@ function Conversation(props) {
   }
 
   const { title } = conversation;
+
+  const pusher = new Pusher(__PUSHER_KEY__, {
+    cluster: __PUSHER_CLUSTER__,
+    forceTLS: true
+  });
+
+  const channel = pusher.subscribe('my-channel');
+
+  channel.bind('my-event', function(data) {
+    setMessages([...messages, data.message]);
+  });
 
   return (
     <div className='conversation'>
