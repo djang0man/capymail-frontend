@@ -2,7 +2,7 @@
 
 capymail frontend
 ===
-> Realtime messaging with mailgun and socket.io
+> Realtime messaging with Mailgun and Pusher.
 
 UI for https://github.com/stuartkershaw/capymail-backend
 
@@ -16,6 +16,8 @@ API_PORT=8000
 CLIENT_URL=http://localhost:4000
 API_URL=http://localhost:8000
 NODE_ENV=development
+PUSHER_KEY={ your Pusher key }
+PUSHER_CLUSTER={ your Pusher cluster }
 ```
 
 ## Start
@@ -26,4 +28,3 @@ NODE_ENV=development
 
 ## Next steps
 * Frontend caching.
-* Cleanup lifecycle hooks and rendering.
