@@ -40,7 +40,7 @@ function Dashboard(props) {
     const payload = { ...conversation, profile };
 
     networkConversation.create(token, payload)
-      .then(() => {
+      .then(conversation => {
         onSetConversations([...conversations, conversation]);
       })
     .catch(console.error);
