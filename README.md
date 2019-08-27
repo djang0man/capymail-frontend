@@ -2,7 +2,7 @@
 
 capymail frontend
 ===
-> Realtime messaging with Mailgun and Pusher.
+> Realtime messaging with <a href="https://www.mailgun.com/">Mailgun</a> and <a href="https://pusher.com/">Pusher</a>.
 
 UI for https://github.com/stuartkershaw/capymail-backend
 
