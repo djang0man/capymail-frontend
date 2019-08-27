@@ -24,8 +24,6 @@
   "homepage": "https://github.com/stuartkershaw/capymail-frontend#readme",
   "dependencies": {
     "dotenv": "^8.0.0",
-    "draft-js": "^0.11.0",
-    "draftjs-to-html": "^0.8.4",
     "express": "^4.17.1",
     "moment": "^2.24.0",
     "react": "^16.9.0",

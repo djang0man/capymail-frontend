@@ -63,7 +63,10 @@ function Dashboard(props) {
             )}
           </ol>
           <Conversation token={ token } profile={ profile } conversation={ conversation } />
-          <ConversationForm profile={ profile } onComplete={ handleConversationCreate } />
+
+          {conversation === null &&
+            <ConversationForm profile={ profile } onComplete={ handleConversationCreate } />
+          }
         </div>
       }
     </>
