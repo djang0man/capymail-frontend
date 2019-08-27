@@ -13,9 +13,9 @@ Include a `.env` file with the following environment variables:
 ```
 PORT=4000
 API_PORT=8000
-CLIENT_URL=http://localhost:4000
-API_URL=http://localhost:8000
 NODE_ENV=development
+API_URL=http://localhost:8000
+CLIENT_URL=http://localhost:4000
 PUSHER_KEY={ your Pusher key }
 PUSHER_CLUSTER={ your Pusher cluster }
 ```
