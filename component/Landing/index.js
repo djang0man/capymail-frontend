@@ -1,11 +1,13 @@
 import React from 'react';
 
-import * as networkAuth from '../../lib/network/auth.js';
-import * as networkProfile from '../../lib/network/profile.js';
+import { useAppContext } from '../App';
 
 import AuthForm from '../AuthForm';
 
-function Landing(props) {
+import * as networkAuth from '../../lib/network/auth.js';
+import * as networkProfile from '../../lib/network/profile.js';
+
+function Landing() {
   const {
     token,
     onSetToken,
@@ -15,7 +17,7 @@ function Landing(props) {
     onSetProfile,
     activePage,
     onSetActivePage
-  } = props;
+  } = useAppContext();
 
   const handleLogin = user => {
     networkAuth.login(user)

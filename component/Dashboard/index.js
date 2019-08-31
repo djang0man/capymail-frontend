@@ -3,20 +3,22 @@ import './dashboard.scss';
 import React, { useRef, useEffect, useState } from 'react';
 import moment from 'moment';
 
+import { useAppContext } from '../App';
+
 import Button from '../Button';
 import Conversation from '../Conversation';
 import ConversationForm from '../ConversationForm';
 
 import * as networkConversation from '../../lib/network/conversation.js';
 
-function Dashboard(props) {
+function Dashboard() {
   const {
     token,
     profile,
     conversations,
     onSetConversations,
     activePage
-  } = props;
+  } = useAppContext();
 
   if (!token || !profile) {
     return null;

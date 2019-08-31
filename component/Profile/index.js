@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 
+import { useAppContext } from '../App';
+
 import Button from '../Button';
 import ProfileForm from '../ProfileForm';
 
 import * as networkProfile from '../../lib/network/profile.js';
 
-function Profile(props) {
+function Profile() {
   const {
     token,
     profile,
     onSetProfile,
     activePage
-  } = props;
+  } = useAppContext();
 
   const [editing, setEditing] = useState(false);
 

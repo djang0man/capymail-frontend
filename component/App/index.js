@@ -1,21 +1,24 @@
 import './foundation.min.css';
 import './app.scss';
 
-import React, { Component, useState } from 'react';
-
-import * as rehydrate from '../../lib/rehydrate.js';
-import * as networkAuth from '../../lib/network/auth.js';
+import React, { createContext, useContext, useState } from 'react';
 
 import Header from '../Header';
 import Landing from '../Landing';
 import Profile from '../Profile';
 import Dashboard from '../Dashboard';
 
+import * as rehydrate from '../../lib/rehydrate.js';
+import * as networkAuth from '../../lib/network/auth.js';
+
 const cachedToken = rehydrate.tokenState || null;
 const cachedProfile = rehydrate.profileState || null;
 const cachedLoggedIn = !!cachedToken;
 
 const defaultActivePage = cachedLoggedIn ? '/dashboard' : '/';
+
+const AppContext = createContext();
+export const useAppContext = () => useContext(AppContext);
 
 function App() {
   const [activePage, setActivePage] = useState(defaultActivePage);
@@ -53,35 +56,24 @@ function App() {
     <div className='app row'>
       { console.log('APP RENDER') }
       <div className='columns'>
-        <Header
-          profile={ profile }
-          loggedIn={ loggedIn }
-          onSetLoggedIn={ onSetLoggedIn }
-          onSetActivePage={ onSetActivePage }
-        />
-        <Landing
-          token={ token }
-          onSetToken={ onSetToken }
-          loggedIn={ loggedIn }
-          onSetLoggedIn={ onSetLoggedIn }
-          profile={ profile }
-          onSetProfile={ onSetProfile }
-          activePage={ activePage }
-          onSetActivePage={ onSetActivePage }
-        />
-        <Profile
-          token={ token }
-          profile={ profile }
-          onSetProfile={ onSetProfile }
-          activePage={ activePage }
-        />
-        <Dashboard
-          token={ token }
-          profile={ profile }
-          conversations={ conversations }
-          onSetConversations={ onSetConversations }
-          activePage={ activePage }
-        />
+        <AppContext.Provider
+          value={{
+            token,
+            profile,
+            loggedIn,
+            activePage,
+            conversations,
+            onSetToken,
+            onSetProfile,
+            onSetLoggedIn,
+            onSetActivePage,
+            onSetConversations
+          }}>
+          <Header />
+          <Landing />
+          <Profile />
+          <Dashboard />
+        </AppContext.Provider>
       </div>
     </div>
   )

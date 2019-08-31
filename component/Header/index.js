@@ -2,15 +2,17 @@ import './header.scss';
 
 import React from 'react';
 
+import { useAppContext } from '../App';
+
 import Button from '../Button';
 
-function Header(props) {
+function Header() {
   const {
     profile,
     loggedIn,
     onSetLoggedIn,
     onSetActivePage
-  } = props;
+  } = useAppContext();
 
   const handleLogout = () => {
     onSetLoggedIn(!loggedIn);
