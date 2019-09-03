@@ -69,15 +69,11 @@ function App() {
             onSetActivePage,
             onSetConversations
           }}>
-
           <Header />
-
           <Landing />
-
           { activePage == '/profile' &&
             <Profile />
           }
-
           { activePage == '/dashboard' &&
             <Dashboard />
           }
