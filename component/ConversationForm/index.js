@@ -9,7 +9,6 @@ const emptyState = {
 
 function ConversationForm(props) {
   const {
-    profile,
     onComplete
   } = props;
 

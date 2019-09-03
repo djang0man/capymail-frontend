@@ -1,6 +1,6 @@
 import './dashboard.scss';
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 
 import { useAppContext } from '../App';
@@ -17,24 +17,18 @@ function Dashboard() {
     profile,
     conversations,
     onSetConversations,
-    activePage
   } = useAppContext();
 
   if (!token || !profile) {
     return null;
   }
 
-  const didMountRef = useRef(false);
-
-  useEffect(() => {
-    if (!didMountRef.current) {
-      networkConversation.fetch(token, profile)
-        .then(conversations => {
-          onSetConversations(conversations)
-        });
-      didMountRef.current = true;
-    }
-  }, [onSetConversations]);
+  if (!conversations.length > 0) {
+    networkConversation.fetch(token, profile)
+      .then(conversations => {
+        onSetConversations(conversations)
+      });
+  }
 
   const handleConversationCreate = conversation => {
     const payload = { ...conversation, profile };
@@ -53,7 +47,7 @@ function Dashboard() {
 
   return (
     <>
-      {profile && activePage == '/dashboard' &&
+      {profile &&
         <div className='dashboard'>
           { console.log('DASHBOARD RENDER') }
           <h3>Conversations</h3>
@@ -67,7 +61,7 @@ function Dashboard() {
           <Conversation token={ token } profile={ profile } conversation={ conversation } />
 
           {conversation === null &&
-            <ConversationForm profile={ profile } onComplete={ handleConversationCreate } />
+            <ConversationForm onComplete={ handleConversationCreate } />
           }
         </div>
       }

@@ -69,10 +69,18 @@ function App() {
             onSetActivePage,
             onSetConversations
           }}>
+
           <Header />
+
           <Landing />
-          <Profile />
-          <Dashboard />
+
+          { activePage == '/profile' &&
+            <Profile />
+          }
+
+          { activePage == '/dashboard' &&
+            <Dashboard />
+          }
         </AppContext.Provider>
       </div>
     </div>

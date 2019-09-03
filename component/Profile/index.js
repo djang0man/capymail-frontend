@@ -11,8 +11,7 @@ function Profile() {
   const {
     token,
     profile,
-    onSetProfile,
-    activePage
+    onSetProfile
   } = useAppContext();
 
   const [editing, setEditing] = useState(false);
@@ -36,35 +35,31 @@ function Profile() {
   }
 
   return (
-    <>
-      {activePage == '/profile' &&
-        <div className='profile'>
-          { console.log('PROFILE RENDER') }
-          <h2>Profile</h2>
-          { profile ?
+    <div className='profile'>
+      { console.log('PROFILE RENDER') }
+      <h2>Profile</h2>
+      { profile ?
+        <div>
+          <h3>{ profile.firstName } { profile.lastName }</h3>
+          {editing ?
             <div>
-              <h3>{ profile.firstName } { profile.lastName }</h3>
-              {editing ?
-                <div>
-                  <ProfileForm profile={ profile } onComplete={ handleUpdate } />
-                  <Button className='button' onClick={() => setEditing(false) }>
-                    Cancel
-                  </Button>
-                </div>
-              :
-                <div>
-                  <Button className='button' onClick={() => setEditing(true) }>
-                    Edit Profile
-                  </Button>
-                </div>
-              }
+              <ProfileForm profile={ profile } onComplete={ handleUpdate } />
+              <Button className='button' onClick={() => setEditing(false) }>
+                Cancel
+              </Button>
             </div>
           :
-            <ProfileForm onComplete={ handleCreate } />
+            <div>
+              <Button className='button' onClick={() => setEditing(true) }>
+                Edit Profile
+              </Button>
+            </div>
           }
         </div>
+      :
+        <ProfileForm onComplete={ handleCreate } />
       }
-    </>
+    </div>
   )
 }
 

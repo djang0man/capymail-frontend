@@ -54,7 +54,7 @@ function Landing() {
     () => onSetActivePage('/dashboard');
   }
 
-  if (loggedIn && !profile) {
+  if (token && loggedIn && !profile) {
     networkProfile.fetch(token)
       .then(profile => {
         onSetProfile(profile);
